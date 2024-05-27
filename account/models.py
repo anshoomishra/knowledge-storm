@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 
@@ -10,7 +11,7 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=100)
     email = models.EmailField()
     phone_number = models.CharField(max_length=10)
-    id = models.UUIDField()
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4, editable=False)
     user_ratings = models.IntegerField()
 
     class Meta:

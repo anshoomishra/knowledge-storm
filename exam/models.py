@@ -4,12 +4,12 @@ from account.models import User
 
 
 class Test(models.Model):
-    name = models.CharField()
-    description = models.CharField()
-    title = models.CharField()
+    name = models.CharField(max_length=200)
+    description = models.CharField(max_length=200)
+    title = models.CharField(max_length=200)
     duration = models.DurationField()
-    owner = models.ForeignKey(User)
-    updated_by = models.ForeignKey(User)
+    owner = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True,related_name="owner")
+    updated_by = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True,related_name="updator")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     total_marks = models.IntegerField()
