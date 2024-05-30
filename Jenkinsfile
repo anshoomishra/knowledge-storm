@@ -3,15 +3,15 @@ pipeline {
 
     environment {
         DOCKER_CREDENTIALS_ID = credentials('dockerhubid')
-        DOCKER_IMAGE_NAME = 'anshoo/simple_crud'
+        DOCKER_IMAGE_NAME = 'anshoo/deepwater'
         GIT_REPO_URL = 'https://github.com/anshoomishra/simple_crud.git'
         SECRET_KEY = credentials('SECRET_KEY') // Using Jenkins Credentials Plugin
         DB_NAME = credentials('DB_NAME')
         DB_USER = credentials('DB_USER')
         DB_PASSWORD = credentials('DB_PASSWORD')
         DB_HOST = credentials('DB_HOST')
-        DB_PORT = '5432'
-        ALLOWED_HOSTS = 'yourdomain.com,www.yourdomain.com'
+        DB_PORT = credentials('DB_PORT')
+        ALLOWED_HOSTS = credentials('ALLOWED_HOSTS')
     }
 
     stages {
