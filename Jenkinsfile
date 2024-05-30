@@ -25,26 +25,33 @@ pipeline {
             steps {
                 script {
                     docker.build("${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}",
-                    """--build-arg SECRET_KEY=${env.SECRET_KEY} \
-                         --build-arg DB_NAME=${env.DB_NAME} \
-                         --build-arg DB_USER=${env.DB_USER} \
-                         --build-arg DB_PASSWORD=${env.DB_PASSWORD} \
-                         --build-arg DB_HOST=${env.DB_HOST} \
-                         --build-arg DB_PORT=${env.DB_PORT} \
-                         --build-arg ALLOWED_HOSTS=${env.ALLOWED_HOSTS} ."""
+                    """
+                    --build-arg SECRET_KEY=${env.SECRET_KEY} \
+                    --build-arg DB_NAME=${env.DB_NAME} \
+                    --build-arg DB_USER=${env.DB_USER} \
+                    --build-arg DB_PASSWORD=${env.DB_PASSWORD} \
+                    --build-arg DB_HOST=${env.DB_HOST} \
+                    --build-arg DB_PORT=${env.DB_PORT} \
+                    --build-arg ALLOWED_HOSTS=${env.ALLOWED_HOSTS}
+                    """
                     )
                 }
             }
         }
 
-        stage('login to dockerhub') {
-            steps{
-                sh 'echo $DOCKER_CREDENTIALS_ID_PSW | docker login -u $DOCKER_CREDENTIALS_ID_USR --password-stdin'
+        stage('Login to DockerHub') {
+            steps {
+                script {
+                    sh 'echo $DOCKER_CREDENTIALS_ID_PSW | docker login -u $DOCKER_CREDENTIALS_ID_USR --password-stdin'
+                }
             }
         }
-        stage('push image') {
-            steps{
-                sh 'docker push $DOCKER_IMAGE_NAME:$BUILD_NUMBER'
+
+        stage('Push Image') {
+            steps {
+                script {
+                    sh 'docker push $DOCKER_IMAGE_NAME:$BUILD_NUMBER'
+                }
             }
         }
     }
