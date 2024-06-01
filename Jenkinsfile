@@ -23,7 +23,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-            script {
+
                     sh '''#!/bin/bash
                              docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} \
                             --build-arg SECRET_KEY=${SECRET_KEY} \
@@ -34,20 +34,6 @@ pipeline {
                             --build-arg DB_PORT=${DB_PORT} \
                             --build-arg ALLOWED_HOSTS=${ALLOWED_HOSTS} .
                         '''
-                }
-//                 script {
-//                     def buildArgs = """
-//                         --build-arg SECRET_KEY=${env.SECRET_KEY} \
-//                         --build-arg DB_NAME=${env.DB_NAME} \
-//                         --build-arg DB_USER=${env.DB_USER} \
-//                         --build-arg DB_PASSWORD=${env.DB_PASSWORD} \
-//                         --build-arg DB_HOST=${env.DB_HOST} \
-//                         --build-arg DB_PORT=${env.DB_PORT} \
-//                         --build-arg ALLOWED_HOSTS=${env.ALLOWED_HOSTS}
-//                     """
-//                     docker.build("${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}", "${buildArgs} .")
-//                 }
-
             }
         }
 
