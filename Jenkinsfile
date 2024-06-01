@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS_ID = credentials('DOCKER_CREDENTIALS_ID')
         DOCKER_IMAGE_NAME = 'anshoo/deepwater'
-        GIT_REPO_URL = 'https://github.com/anshoomishra/simple_crud.git'
+        GIT_REPO_URL = 'https://github.com/anshoomishra/deepwater.git'
         SECRET_KEY = credentials('SECRET_KEY') // Using Jenkins Credentials Plugin
         DB_NAME = credentials('DB_NAME')
         DB_USER = credentials('DB_USER')
