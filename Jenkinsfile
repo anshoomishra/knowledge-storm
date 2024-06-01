@@ -25,7 +25,7 @@ pipeline {
             steps {
             script {
                     sh '''#!/bin/bash
-                            sudo docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} \
+                             docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} \
                             --build-arg SECRET_KEY=${SECRET_KEY} \
                             --build-arg DB_NAME=${DB_NAME} \
                             --build-arg DB_USER=${DB_USER} \
