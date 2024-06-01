@@ -12,6 +12,7 @@ pipeline {
         DB_HOST = credentials('DB_HOST')
         DB_PORT = credentials('DB_PORT')
         ALLOWED_HOSTS = credentials('ALLOWED_HOSTS')
+        DJANGO_ENV = credentials('DJANGO_ENV')
     }
 
     stages {
@@ -32,6 +33,7 @@ pipeline {
                             --build-arg DB_PASSWORD=${DB_PASSWORD} \
                             --build-arg DB_HOST=${DB_HOST} \
                             --build-arg DB_PORT=${DB_PORT} \
+                            --build-arg DJANGO_ENV=${DJANGO_ENV} \
                             --build-arg ALLOWED_HOSTS=${ALLOWED_HOSTS} .
                         '''
             }
