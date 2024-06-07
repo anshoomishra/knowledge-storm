@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_CREDENTIALS_ID = credentials('DOCKER_CREDENTIALS_ID')
+        PATH = "/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
         DOCKER_IMAGE_NAME = 'anshoo/deepwater'
         GIT_REPO_URL = 'https://github.com/anshoomishra/deepwater.git'
         SECRET_KEY = credentials('SECRET_KEY') // Using Jenkins Credentials Plugin
