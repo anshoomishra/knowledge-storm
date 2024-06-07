@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    environment {
+        EC2_INSTANCE_IP = 'your-ec2-instance-ip'
+        EC2_USER = 'ec2-user'
+        SSH_KEY_ID = 'your-ssh-key-id'
+        DOCKER_IMAGE_NAME = 'anshoo/deepwater'
+        DOCKER_IMAGE_TAG = 'latest'
+        DOCKER_CONTAINER_NAME = 'deepwater-app'
+    }
+
+    stages {
+        stage('Deploy to EC2') {
+            steps {
+                script {
+                    sshagent(['SSH_KEY_ID']) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_INSTANCE_IP} '
+                            docker pull ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} &&
+                            docker stop ${DOCKER_CONTAINER_NAME} || true &&
+                            docker rm ${DOCKER_CONTAINER_NAME} || true &&
+                            docker run -d --name ${DOCKER_CONTAINER_NAME} --env-file /path/to/env/file -p 8000:8000 ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}'
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Configure Nginx') {
+            steps {
+                script {
+                    sshagent(['SSH_KEY_ID']) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_INSTANCE_IP} '
+                            sudo cp /path/to/nginx/config /etc/nginx/sites-available/deepwater &&
+                            sudo ln -s /etc/nginx/sites-available/deepwater /etc/nginx/sites-enabled/ &&
+                            sudo nginx -s reload'
+                        """
+                    }
+                }
+            }
+        }
+    }
+}
