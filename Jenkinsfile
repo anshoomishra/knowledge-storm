@@ -28,6 +28,13 @@ pipeline {
                     sh '''#!/bin/bash
                              docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} \
                             --build-arg SECRET_KEY=${SECRET_KEY} \
+                            --build-arg DB_NAME=${DB_NAME} \
+                            --build-arg DB_USER=${DB_USER} \
+                            --build-arg DB_PASSWORD=${DB_PASSWORD} \
+                            --build-arg DB_HOST=${DB_HOST} \
+                            --build-arg DB_PORT=${DB_PORT} \
+                            --build-arg DJANGO_ENV=${DJANGO_ENV} \
+                            --build-arg ALLOWED_HOSTS=${ALLOWED_HOSTS} \
                             .
                         '''
             }
