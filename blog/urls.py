@@ -1,6 +1,7 @@
-from blog.views import test
+from blog.views import test,HomePage
 from django.urls import path
 
 urlpatterns = [
-    path('',test,name="home"),
+    path('golu/',test,name="home"),
+    path('',HomePage.as_view(),name="home-page"),
 ]

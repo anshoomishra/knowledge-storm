@@ -6,3 +6,5 @@ from django.http import HttpResponse
 def test(request):
     return HttpResponse("Hello Golu Bitti")
 
+class HomePage(TemplateView):
+    template_name = "blog/home.html"
