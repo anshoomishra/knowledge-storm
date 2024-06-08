@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         DOCKER_CREDENTIALS_ID = credentials('DOCKER_CREDENTIALS_ID')
-        PATH = "/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
         DOCKER_IMAGE_NAME = 'anshoo/deepwater'
         GIT_REPO_URL = 'https://github.com/anshoomishra/deepwater.git'
         SECRET_KEY = credentials('SECRET_KEY') // Using Jenkins Credentials Plugin
@@ -27,7 +26,7 @@ pipeline {
             steps {
 
                     sh '''#!/bin/bash
-                             docker buildx build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} \
+                             docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} \
                             --build-arg SECRET_KEY=${SECRET_KEY} \
                             --build-arg DB_NAME=${DB_NAME} \
                             --build-arg DB_USER=${DB_USER} \
