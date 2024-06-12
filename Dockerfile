@@ -34,8 +34,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . /usr/src/app/
 
+RUN chmod +x /usr/src/app/entrypoint.sh
 # Expose the port the app runs on
 EXPOSE 8000
 
 # Run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "deepwater.wsgi:application"]
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]

@@ -22,7 +22,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'account',
     'exam',
-    'blog'
+    'blog',
+    'ckeditor'
 ]
 
 MIDDLEWARE = [
@@ -88,3 +89,11 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# Media files (Uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# CKEditor configuration
+CKEDITOR_UPLOAD_PATH = 'uploads/'
