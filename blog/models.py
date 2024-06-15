@@ -7,16 +7,21 @@ from ckeditor.fields import RichTextField
 
 
 class Article(models.Model):
-    id = models.UUIDField(uuid.uuid4(),primary_key=True,editable=False)
-    title = models.CharField(max_length=200)
-    description = models.CharField(max_length=200,null=True)
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+    ]
+
+    title = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, blank=True, null=True)
     content = RichTextField()
-    created_by = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,related_name="article_creator")
-    updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="article_updator")
+    created_by = models.ForeignKey(User, related_name='articles_created', on_delete=models.SET_NULL, null=True)
+    updated_by = models.ForeignKey(User, related_name='articles_updated', on_delete=models.SET_NULL, null=True)
+    published_by = models.ForeignKey(User, related_name='articles_published', on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    published_at = models.DateTimeField()
-    publisher = models.ForeignKey(User,on_delete=models.SET_NULL, null=True, related_name="publisher")
+    published_at = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
 
 
     def __str__(self):
@@ -24,3 +29,9 @@ class Article(models.Model):
 
     def publish(self):
         self.published_at = timezone.now()
+
+    class Meta:
+        permissions = [
+            ('can_create_article', 'Can create article'),
+            ('can_update_article', 'Can update article'),
+        ]

@@ -25,3 +25,12 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 admin.site.register(User, UserAdmin)
+
+# Unregister the provided model admin
+from django.contrib.auth.models import Group
+admin.site.unregister(User)
+admin.site.unregister(Group)
+
+# Re-register UserAdmin
+admin.site.register(User, UserAdmin)
+admin.site.register(Group)
