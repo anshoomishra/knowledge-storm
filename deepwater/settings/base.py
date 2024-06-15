@@ -23,7 +23,9 @@ INSTALLED_APPS = [
     'account',
     'exam',
     'blog',
-    'ckeditor'
+    'ckeditor',
+    'ckeditor_uploader',
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -102,3 +104,5 @@ AUTH_USER_MODEL = 'account.User'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
