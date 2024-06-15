@@ -106,3 +106,11 @@ LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': '100%',
+    },
+}

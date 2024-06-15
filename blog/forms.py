@@ -14,6 +14,6 @@ class ArticleForm(ModelForm):
         widgets = {
             "title":forms.TextInput(attrs={"class":"form-control","place-holder":"title"}),
             "description": forms.TextInput(attrs={"class": "form-control", "place-holder": "title"}),
-            'content': TinyMCE(attrs={'cols': 80, 'rows': 30}),
+
 
         }

@@ -3,6 +3,7 @@ from account.models import User
 from django.utils import timezone
 import uuid
 from tinymce.models import HTMLField
+from ckeditor.fields import RichTextField
 # Create your models here.
 
 
@@ -10,7 +11,7 @@ class Article(models.Model):
     id = models.UUIDField(uuid.uuid4(),primary_key=True,editable=False)
     title = models.CharField(max_length=200)
     description = models.CharField(max_length=200,null=True)
-    content = HTMLField()
+    content = RichTextField()
     created_by = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,related_name="article_creator")
     updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="article_updator")
     created_at = models.DateTimeField(auto_now_add=True)
