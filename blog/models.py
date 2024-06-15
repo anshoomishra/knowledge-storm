@@ -2,7 +2,6 @@ from django.db import models
 from account.models import User
 from django.utils import timezone
 import uuid
-from tinymce.models import HTMLField
 from ckeditor.fields import RichTextField
 # Create your models here.
 
