@@ -24,7 +24,7 @@ from .forms import ArticleForm
 from .models import Article
 from django.views.generic import CreateView, UpdateView
 
-class ArticleCreateView(LoginRequiredMixin, CreateView):
+class ArticleCreateView(LoginRequiredMixin, ArticlePermissionMixin,CreateView):
     model = Article
     form_class = ArticleForm
     template_name = 'blog/article_form.html'

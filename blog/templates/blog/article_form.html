@@ -3,9 +3,10 @@
 {% block content %}
 <div class="container">
         <h1>{% if form.instance.pk %}Update Article{% else %}Create Article{% endif %}</h1>
+
         {% if not user.is_authenticated %}
             <div class="alert alert-danger">You must be logged in to create or update articles.</div>
-        {% elif not has_permission %}
+        {% elif not user.has_permission %}
             <div class="alert alert-danger">You do not have permission to create or update articles.</div>
         {% else %}
             <form method="post">
