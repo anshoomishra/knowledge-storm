@@ -25,7 +25,7 @@ class Article(models.Model):
 
 
     def __str__(self):
-        return self.id
+        return self.title
 
     def publish(self):
         self.published_at = timezone.now()

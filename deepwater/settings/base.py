@@ -111,5 +111,7 @@ CKEDITOR_CONFIGS = {
         'toolbar': 'full',
         'height': 300,
         'width': '100%',
+        'allowedContent': True,
+        'filebrowserUploadUrl': '/ckeditor/upload/',
     },
 }

@@ -41,7 +41,7 @@ class ArticleUpdateView(LoginRequiredMixin, ArticlePermissionMixin, UpdateView):
     success_url = reverse_lazy('article_list')
 
     def form_valid(self, form):
-        form.instance.updated_by = self.request.user
+        form.instance.updated_by = self.request.user.id
         return super().form_valid(form)
 
 
