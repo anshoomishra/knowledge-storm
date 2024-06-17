@@ -13,13 +13,13 @@ services:
 
   web:
     build: .
-    #command: /usr/src/app/entrypoint.sh
-    entrypoint:
-      - /bin/bash
-      - -c
-      - |
-        python3 manage.py runserver --insecure 0.0.0.0:8000 #Insecure helps us serve static with Debug = False, since this is the dev container, this is intentional.
-        # sleep infinity
+    command: /usr/src/app/entrypoint.sh
+#    entrypoint:
+#      - /bin/bash
+#      - -c
+#      - |
+#        python3 manage.py runserver --insecure 0.0.0.0:8000 #Insecure helps us serve static with Debug = False, since this is the dev container, this is intentional.
+#        # sleep infinity
     volumes:
       - .:/usr/src/app
       - static_volume:/usr/src/app/static
@@ -29,7 +29,18 @@ services:
       - .env
     depends_on:
       - db
-
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/custom.conf:/etc/nginx/conf.d/custom.conf:ro
+      - static_volume:/usr/src/app/static
+      - media_volume:/usr/src/app/media
+    depends_on:
+      - web
 volumes:
   postgres_data:
   static_volume:
+  media_volume:
