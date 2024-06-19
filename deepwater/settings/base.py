@@ -115,3 +115,7 @@ CKEDITOR_CONFIGS = {
         'filebrowserUploadUrl': '/ckeditor/upload/',
     },
 }
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
