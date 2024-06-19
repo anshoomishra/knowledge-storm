@@ -1,0 +1,26 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+#navbar {
+    transition: all 0.3s ease;
+}
+
+.content {
+    padding: 100px 20px;
+}
+
+#navbar.scrolled {
+    background-color: #222 !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Dropdown hover styles */
+.navbar-nav .dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu {
+    margin-top: 0; /* Ensure the dropdown menu aligns correctly */
+}
