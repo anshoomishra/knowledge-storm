@@ -1,5 +1,5 @@
 from django.db import models
-from account.models import User
+from ksauth.models import User
 from django.utils import timezone
 import uuid
 from ckeditor.fields import RichTextField

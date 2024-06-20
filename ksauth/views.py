@@ -8,7 +8,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 
 class UserSignUpView(CreateView):
     form_class = UserRegistrationForm
-    template_name = 'account/signup.html'
+    template_name = 'ksauth/signup.html'
     success_url = reverse_lazy('home')
 
     def form_valid(self, form):
@@ -18,7 +18,7 @@ class UserSignUpView(CreateView):
 
 class UserLoginView(LoginView):
     form_class = UserLoginForm
-    template_name = 'account/login.html'
+    template_name = 'ksauth/login.html'
     success_url = '/'
 
     def dispatch(self, request, *args, **kwargs):

@@ -20,7 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'account',
+    'ksauth',
     'exam',
     'blog',
     'ckeditor',
@@ -99,7 +99,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # CKEditor configuration
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'ksauth.User'
 LOGIN_URL = '/auth/login/'
 
 LOGIN_REDIRECT_URL = '/'

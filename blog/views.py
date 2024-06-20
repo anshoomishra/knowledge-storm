@@ -7,7 +7,7 @@ from django.http import HttpResponse
 
 from blog.forms import ArticleForm
 from blog.models import Article
-from .permissions import ArticlePermissionMixin
+from .permissions import CreateViewPermissionMixin,DetailViewPermissionMixin
 
 
 # Create your views here.
@@ -27,7 +27,7 @@ from .models import Article
 from django.views.generic import CreateView, UpdateView
 
 
-class ArticleCreateView(LoginRequiredMixin, ArticlePermissionMixin, CreateView):
+class ArticleCreateView(LoginRequiredMixin, CreateViewPermissionMixin, CreateView):
     model = Article
     form_class = ArticleForm
     template_name = 'blog/article_form.html'
@@ -35,12 +35,13 @@ class ArticleCreateView(LoginRequiredMixin, ArticlePermissionMixin, CreateView):
     login_url = '/auth/login/'
 
 
+
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         return super().form_valid(form)
 
 
-class ArticleUpdateView(LoginRequiredMixin, ArticlePermissionMixin, UpdateView):
+class ArticleUpdateView(LoginRequiredMixin, DetailViewPermissionMixin, UpdateView):
     model = Article
     form_class = ArticleForm
     template_name = 'blog/article_form.html'
