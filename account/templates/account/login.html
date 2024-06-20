@@ -1,19 +1,41 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <h1>Sign In to your account</h1>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
 
-    <div class="container mt-5">
-        <h2>Login {{user}}</h2>
-        {% if user.is_authenticated %}
-        <h1>user</h1>
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+                <button type="submit" class="btn btn-primary mt-3">Login</button>
+            </form>
+            <div class="mt-3 d-flex align-items-center justify-content-between">
+                <a href="{}">Forgot password?</a>
+                <a href="{}">Don't have an account? Sign Up</a>
+            </div>
 
-        {% endif %}
-        <form method="post">
-            {% csrf_token %}
+            <div class="mt-3">
+                <p>Or login with:</p>
+                <a href="" class="btn btn-danger">Google</a>
+                <a href="" class="btn btn-dark">GitHub</a>
+                <a href="" class="btn btn-primary">Facebook</a>
+            </div>
+        </div>
 
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
-        <a href="{% url 'signup' %}">Don't have an account? Sign Up</a>
+        <div class="col-md-6 d-flex justify-content-center">
+            <div>
+            <h1>By Signing In Here You Will Be Able To </h1>
+            <ul>
+                <li>👤 Manage your profile</li>
+                <li>📝 Saved blogs</li>
+                <li>📊 Test series status</li>
+            </ul>
+            </div>
+
+        </div>
     </div>
+</div>
 {% endblock %}

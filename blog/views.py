@@ -32,6 +32,8 @@ class ArticleCreateView(LoginRequiredMixin, ArticlePermissionMixin, CreateView):
     form_class = ArticleForm
     template_name = 'blog/article_form.html'
     success_url = reverse_lazy('article_list')
+    login_url = '/auth/login/'
+
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
