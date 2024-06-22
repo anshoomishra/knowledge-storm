@@ -35,4 +35,4 @@ venv.bak/
 # IDEs
 .vscode/
 .idea/
-*/migrations/
+
