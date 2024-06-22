@@ -5,7 +5,7 @@ from django.urls import path
 
 urlpatterns = [
     path('golu/',test,name="home"),
-    path('',HomePage.as_view(),name="home-page"),
+    path('',ArticleListView.as_view(),name="home-page"),
     path('articles/', ArticleListView.as_view(), name='article_list'),
     path('ckeditor/upload/', ckeditor_views.upload, name='ckeditor_upload'),
     path('articles/create/', ArticleCreateView.as_view(), name='article_create'),

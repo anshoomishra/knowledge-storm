@@ -8,6 +8,10 @@ from django.http import HttpResponse
 from blog.forms import ArticleForm
 from blog.models import Article
 from .permissions import CreateViewPermissionMixin,DetailViewPermissionMixin
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from .forms import ArticleForm
+from .models import Article
 
 
 # Create your views here.
@@ -18,13 +22,6 @@ def test(request):
 
 class HomePage(TemplateView):
     template_name = "blog/home.html"
-
-
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from .forms import ArticleForm
-from .models import Article
-from django.views.generic import CreateView, UpdateView
 
 
 class ArticleCreateView(LoginRequiredMixin, CreateViewPermissionMixin, CreateView):
@@ -48,7 +45,7 @@ class ArticleUpdateView(LoginRequiredMixin, DetailViewPermissionMixin, UpdateVie
     success_url = reverse_lazy('article_list')
 
     def form_valid(self, form):
-        form.instance.updated_by = self.request.user.id
+        form.instance.updated_by = self.request.user
         return super().form_valid(form)
 
 
@@ -57,14 +54,49 @@ class ArticleDetailView(DetailView):
     template_name = 'blog/article_detail.html'
     context_object_name = 'article'
 
+    def get(self, request, *args, **kwargs):
+        # Get the article object
+        self.object = self.get_object()
+
+        # Increment the views count
+        self.object.views += 1
+
+        # Save the updated article
+        self.object.save(update_fields=['views'])
+
+        # Call the super class's get method to proceed with normal processing
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
 
 class ArticleListView(ListView):
     model = Article
     template_name = 'blog/article_list.html'
     context_object_name = 'articles'
+    paginate_by = 10  # Add pagination
 
     def get_queryset(self):
-        return Article.objects.filter(status='published')
+        queryset = Article.objects.published()
+
+        # Filtering by author
+        author = self.request.GET.get('author')
+        queryset = queryset.filter_by_author(author)
+
+        # Filtering by keywords
+        keywords = self.request.GET.get('keywords')
+        queryset = queryset.filter_by_keywords(keywords)
+
+        # Sorting
+        sort_order = self.request.GET.get('sort_order', 'latest')
+        queryset = queryset.sort_by(sort_order)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['authors'] = Article.objects.values_list('created_by__username', flat=True).distinct()
+        context['keywords'] = Article.objects.values_list('keywords', flat=True).distinct()
+        return context
 
 
 class ArticlePendingListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):

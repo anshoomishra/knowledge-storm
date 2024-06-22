@@ -1,13 +1,31 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-    <h2>{{ article.title }}</h2>
-    <p>{{ article.description }}</p>
-    <div>{{ article.content|safe }}</div>
-    <p>Created by: {{ article.created_by }}</p>
-    <p>Updated by: {{ article.updated_by }}</p>
+<div class="container mt-5">
+    <div class="row">
+        <!-- Article Details Section -->
+        <div class="col-md-8 scrollable-content">
+            <h2>{{ article.title }}</h2>
+            <p>{{ article.description }}</p>
+            <div>{{ article.content|safe }}</div>
+            <p>Created by: {{ article.created_by.username }}</p>
+            <p>Updated by: {{ article.updated_by.username }}</p>
+            <p>Published by: {{ article.published_by.username }}</p>
+        </div>
+
+        <!-- User Details Section -->
+        <div class="col-md-4">
+            <div class="sticky-top">
+                <h3>Author Details</h3>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.created_by.username }}</h5>
+                        <p class="card-text"><strong>Email:</strong> {{ article.created_by.email }}</p>
+                        <p class="card-text"><strong>Joined:</strong> {{ article.created_by.date_joined }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
-
-

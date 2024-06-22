@@ -1,13 +1,70 @@
-
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-        <h1>Published Articles</h1>
-        <ul>
-            {% for article in articles %}
-                <li><a href="{% url 'article_detail' article.pk %}">{{ article.title }}</a> - {{ article.published_at }}</li>
-            {% endfor %}
-        </ul>
+<div class="container mt-5">
+    <div class="row">
+        <!-- Left side: Articles list -->
+        <div class="col-md-8">
+            <h2>Published Articles</h2>
+            <ul class="list-group">
+                {% for article in articles %}
+                    <li class="list-group-item mb-2 shadow-sm">
+                        <h3><a href="{% url 'article_detail' article.pk %}">{{ article.title }}</a></h3>
+                        <p><strong>Author:</strong> {{ article.created_by.username }}</p>
+                        <p><strong>Created At:</strong> {{ article.created_at }}</p>
+                        <p><strong>Views:</strong> {{ article.views }}</p>
+                        <a href="{% url 'article_detail' article.pk %}" class="btn btn-primary">Read More</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% if is_paginated %}
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?{% if request.GET.author %}author={{ request.GET.author }}&{% endif %}{% if request.GET.keywords %}keywords={{ request.GET.keywords }}&{% endif %}{% if request.GET.sort_order %}sort_order={{ request.GET.sort_order }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a></li>
+                        {% endif %}
+                        {% for i in paginator.page_range %}
+                            {% if page_obj.number == i %}
+                                <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="?{% if request.GET.author %}author={{ request.GET.author }}&{% endif %}{% if request.GET.keywords %}keywords={{ request.GET.keywords }}&{% endif %}{% if request.GET.sort_order %}sort_order={{ request.GET.sort_order }}&{% endif %}page={{ i }}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li class="page-item"><a class="page-link" href="?{% if request.GET.author %}author={{ request.GET.author }}&{% endif %}{% if request.GET.keywords %}keywords={{ request.GET.keywords }}&{% endif %}{% if request.GET.sort_order %}sort_order={{ request.GET.sort_order }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </div>
+
+        <!-- Right side: Filter options -->
+        <div class="col-md-4">
+            <h2>Filter Articles</h2>
+            <form method="get">
+                <div class="form-group">
+                    <label for="author">Author</label>
+                    <select id="author" name="author" class="form-control">
+                        <option value="">All</option>
+                        {% for author in authors %}
+                            <option value="{{ author }}">{{ author }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="keywords">Keywords</label>
+                    <input type="text" id="keywords" name="keywords" class="form-control" placeholder="e.g. Django, deployment">
+                </div>
+                <div class="form-group">
+                    <label for="sort_order">Sort by</label>
+                    <select id="sort_order" name="sort_order" class="form-control">
+                        <option value="latest">Latest to Oldest</option>
+                        <option value="oldest">Oldest to Latest</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
+        </div>
     </div>
+</div>
 {% endblock %}
