@@ -1,6 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
+from allauth.account.forms import LoginForm
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit
 
 User = get_user_model()
 
@@ -21,7 +24,14 @@ class UserRegistrationForm(UserCreationForm):
             field.widget.attrs['class'] = 'form-control'
 
 
-class UserLoginForm(AuthenticationForm):
-    username = forms.CharField(max_length=254, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    password = forms.CharField(label="Password", strip=False, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    remember_me = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+class UserLoginForm(LoginForm):
+    def __init__(self, *args, **kwargs):
+        super(UserLoginForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            'login',
+            'password',
+            'remember',
+            Submit('submit', 'Login', css_class='btn btn-primary btn-block')
+        )

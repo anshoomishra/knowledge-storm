@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
+<script src="{% static 'ckeditor/ckeditor/plugins/codesnippet/plugin.js' %}"></script>
 <div class="container">
         <h1>{% if form.instance.pk %}Update Article{% else %}Create Article{% endif %}</h1>
 
@@ -17,4 +18,10 @@
             </form>
         {% endif %}
     </div>
+ <script>
+        CKEDITOR.replace('id_content', {
+            extraPlugins: 'codesnippet',
+            codeSnippet_theme: 'monokai_sublime'
+        });
+ </script>
 {% endblock %}
