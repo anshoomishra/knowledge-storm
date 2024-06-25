@@ -75,3 +75,16 @@ class Article(models.Model):
             ('can_create_article', 'Can create article'),
             ('can_update_article', 'Can update article'),
         ]
+
+class SavedArticle(models.Model):
+    user = models.ForeignKey(User,null=True,blank=True,on_delete=models.CASCADE)
+    article = models.ForeignKey(Article,on_delete=models.CASCADE,null=True,blank=True)
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4, editable=False)
+    saved_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'article')
+    def __str__(self):
+        return f"Saved article - {self.user} - {self.article}"
+
+

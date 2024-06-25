@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Personal Information Card -->
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3>Personal Information</h3>
+                </div>
+                <div class="card-body">
+                    <p><strong>First Name:</strong> {{ profile.first_name }}</p>
+                    <p><strong>Last Name:</strong> {{ profile.last_name }}</p>
+                    <p><strong>Email:</strong> {{ profile.email }}</p>
+                    <p><strong>Phone Number:</strong> {{ profile.phone_number }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Published Articles Card -->
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3>Published Articles</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for article in published_articles %}
+                        <li class="list-group-item">{{ article.title }}</li>
+                        {% empty %}
+                        <li class="list-group-item">No published articles.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Created Articles Card -->
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3>Created Articles</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for article in created_articles %}
+                        <li class="list-group-item">{{ article.title }}</li>
+                        {% empty %}
+                        <li class="list-group-item">No created articles.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Updated Articles Card -->
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3>Updated Articles</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for article in updated_articles %}
+                        <li class="list-group-item">{{ article.title }}</li>
+                        {% empty %}
+                        <li class="list-group-item">No updated articles.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Saved Articles Card -->
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3>Saved Articles</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for item in saved_articles %}
+                        <a class="list-group-item" href="{% url 'article_detail' item.article.pk%}">{{ item.article }}</a>
+                        {% empty %}
+                        <li class="list-group-item">No saved articles.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

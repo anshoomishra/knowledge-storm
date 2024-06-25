@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -6,7 +7,7 @@ from django.views.generic import TemplateView, CreateView, UpdateView, DetailVie
 from django.http import HttpResponse
 
 from blog.forms import ArticleForm
-from blog.models import Article
+from blog.models import Article, SavedArticle
 from .permissions import CreateViewPermissionMixin,DetailViewPermissionMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -107,6 +108,36 @@ class ArticlePendingListView(LoginRequiredMixin, PermissionRequiredMixin, ListVi
 
     def get_queryset(self):
         return Article.objects.filter(status='draft')
+class UserProfileView(ListView):
+    model = Article
+    template_name = 'blog/user_profile.html'
+    context_object_name = 'articles'
+
+    def get_queryset(self):
+        return Article.objects.filter(created_by=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['saved_articles'] = SavedArticle.objects.filter(user=self.request.user)
+        context['published_articles'] = Article.objects.filter(published_by=self.request.user)
+        context['created_articles'] = Article.objects.filter(created_by=self.request.user)
+        context['updated_articles'] = Article.objects.filter(updated_by=self.request.user)
+        context['profile'] = self.request.user
+        return context
+
+
+@login_required
+def save_article(request, article_id):
+    article = get_object_or_404(Article, id=article_id)
+    user = request.user
+
+    if SavedArticle.objects.filter(user=user, article=article).exists():
+        messages.error(request, "You have already saved this article.")
+    else:
+        SavedArticle.objects.create(user=user, article=article)
+        messages.success(request, "Article saved successfully.")
+
+    return redirect('article_detail', pk=article.pk)
 
 
 @login_required

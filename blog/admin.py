@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Article
+from .models import Article,SavedArticle
 
 
 
@@ -14,4 +14,7 @@ class ArticleAdmin(admin.ModelAdmin):
             '//cdn.ckeditor.com/4.14.0/standard/ckeditor.js',
     ]
 
+@admin.register(SavedArticle)
+class SavedArticleAdmin(admin.ModelAdmin):
+    list_display = ('id',)
 
