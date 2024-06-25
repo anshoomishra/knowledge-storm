@@ -152,8 +152,8 @@ SOCIALACCOUNT_PROVIDERS = {
         # (``socialaccount`` app) containing the required client
         # credentials, or list them here:
         'APP': {
-            'client_id': '123',
-            'secret': '456',
+            'client_id': os.getenv("CLIENT_ID"),
+            'secret': os.getenv("SECRET"),
             'key': ''
         }
     }
@@ -162,17 +162,12 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-ACCOUNT_FORMS = {
-    'add_email': 'allauth.account.forms.AddEmailForm',
-    'change_password': 'allauth.account.forms.ChangePasswordForm',
-    'confirm_login_code': 'allauth.account.forms.ConfirmLoginCodeForm',
-    'login': 'ksauth.forms.UserLoginForm',
-    'request_login_code': 'allauth.account.forms.RequestLoginCodeForm',
-    'reset_password': 'allauth.account.forms.ResetPasswordForm',
-    'reset_password_from_key': 'allauth.account.forms.ResetPasswordKeyForm',
-    'set_password': 'allauth.account.forms.SetPasswordForm',
-    'signup': 'allauth.account.forms.SignupForm',
-    'user_token': 'allauth.account.forms.UserTokenForm',
-}
-
 SOCIALACCOUNT_FORMS = {'login': 'ksauth.forms.UserLoginForm',}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.hostinger.com'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'anshu@knowledgestorm.in'
+EMAIL_HOST_PASSWORD = 'Anshoo12@#'
