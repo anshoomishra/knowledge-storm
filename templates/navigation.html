@@ -5,7 +5,7 @@
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="collapse navbar-collapse pathway-extreme" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                      <a class="nav-link" href="{% url 'article_list' %}">Home</a>
@@ -14,13 +14,13 @@
                      <a class="nav-link" href="{% url 'article_list' %}">Articles</a>
                 </li>
                 <li class="nav-item">
-                     <a class="nav-link" href="">Tutorials</a>
+                     <a class="nav-link pathway-extreme" href="">Tutorials</a>
                 </li>
                 <li class="nav-item">
-                     <a class="nav-link" href="">Test Series</a>
+                     <a class="nav-link pathway-extreme" href="">Test Series</a>
                 </li>
                 <li class="nav-item">
-                     <a class="nav-link" href="">About Us</a>
+                     <a class="nav-link pathway-extreme" href="">About Us</a>
                 </li>
                 {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
@@ -36,13 +36,13 @@
                      <a class="nav-link" href="{% url 'login' %}">Login</a>
                 </li>
                 <li class="nav-item">
-                     <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
+                     <a class="nav-link btn btn-primary btn-sm rounded-0" href="{% url 'account_signup' %}">Sign Up</a>
                 </li>
                 {% endif %}
             </ul>
             <form class="d-flex ms-auto">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+                <button class="btn btn-light rounded-0 btn-sm" type="submit">Search</button>
             </form>
         </div>
     </div>
