@@ -1,3 +1,25 @@
 .sticky-top{
     top:70px;
 }
+#navbar {
+
+      transition: top 0.3s;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+}
+
+        .hidden-navbar {
+            top: -70px; /* Adjust this value based on the navbar height */
+        }
+
+        .scrolled-navbar {
+            background-color: #3891E6 !important; /* Change this color as needed */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Add some padding to ensure content is not hidden behind the fixed navbar */
+        body {
+            padding-top: 30px; /* Adjust this value as needed */
+        }
