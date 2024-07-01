@@ -108,7 +108,7 @@ class ArticlePendingListView(LoginRequiredMixin, PermissionRequiredMixin, ListVi
 
     def get_queryset(self):
         return Article.objects.filter(status='draft')
-class UserProfileView(ListView):
+class UserProfileView(LoginRequiredMixin,ListView):
     model = Article
     template_name = 'blog/user_profile.html'
     context_object_name = 'articles'

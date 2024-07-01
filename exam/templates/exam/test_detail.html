@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>{{ test.title }}</h1>
+    <p>{{ test.description }}</p>
+    
+    <h2 class="mt-4">Questions</h2>
+    <ul class="list-group">
+        {% for question in questions %}
+            <li class="list-group-item">
+                {{ question.text }}
+                <ul>
+                    {% for answer in question.answers.all %}
+                        <li>{{ answer.text }} {% if answer.is_correct %}(Correct){% endif %}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

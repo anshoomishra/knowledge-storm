@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Free Tests</h1>
+    <ul class="list-group">
+        {% for test in free_tests %}
+            <li class="list-group-item">
+                <a href="{% url 'test_detail' test.pk %}">{{ test.title }}</a>
+                <p>{{ test.description }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

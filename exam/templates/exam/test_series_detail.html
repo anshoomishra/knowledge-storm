@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>{{ test_series.title }}</h1>
+    <p>{{ test_series.description }}</p>
+    <a href="{% url 'subscribe_test_series' test_series.pk %}" class="btn btn-primary">Subscribe</a>
+    
+    <h2 class="mt-5">Tests in this Series</h2>
+    <ul class="list-group">
+        {% for test in tests %}
+            <li class="list-group-item">
+                <a href="{% url 'test_detail' test.pk %}">{{ test.title }}</a>
+                <p>{{ test.description }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
