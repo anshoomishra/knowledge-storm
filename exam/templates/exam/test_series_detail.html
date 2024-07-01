@@ -1,5 +1,6 @@
+<!-- Example template for test series detail -->
 {% extends 'base.html' %}
-{% load examfilters %}
+{% load  examfilters %}
 {% block content %}
 <div class="container mt-5">
     <div class="row">
@@ -10,7 +11,7 @@
                 {% for test in tests %}
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span>{{ test.title }}</span>
-                        {% with test_attempt=test_attempts|get_item:test.id %}
+                        {% with test_attempts|get_item:test.id as test_attempt %}
                             {% if test_attempt %}
                                 {% if not test_attempt.is_completed %}
                                     <a href="{% url 'resume_test' test_attempt.id %}" class="btn btn-success">Resume Test</a>
@@ -19,7 +20,7 @@
                                 {% endif %}
                             {% else %}
                                 {% if test.questions.first %}
-                                    <a href="{% url 'take_test' test.id test.questions.first.id %}" class="btn btn-primary">Start Test</a>
+                                    <a href="{% url 'start_test' test.id %}" class="btn btn-primary">Start Test</a>
                                 {% endif %}
                             {% endif %}
                         {% endwith %}

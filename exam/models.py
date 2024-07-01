@@ -105,6 +105,39 @@ class TestAttempt(models.Model):
     is_active = models.BooleanField(default=True)
     is_completed = models.BooleanField(default=False)
 
+    @property
+    def remaining_time(self):
+        total_time = self.test.duration.total_seconds()
+        time_spent = self.time_spent.total_seconds()
+        if self.paused_at:
+            time_spent += (timezone.now() - self.paused_at).total_seconds()
+        return max(0, total_time - time_spent)
+
+    def save(self, *args, **kwargs):
+        # Ensure there is only one active attempt per user and test
+        if self.is_active:
+            TestAttempt.objects.filter(user=self.user, test=self.test, is_active=True).update(is_active=False)
+        super().save(*args, **kwargs)
+
+    def pause(self):
+        if self.is_active and not self.is_completed:
+            self.paused_at = timezone.now()
+            self.save()
+
+    def resume(self):
+        if self.paused_at:
+            pause_duration = timezone.now() - self.paused_at
+            self.time_spent += pause_duration
+            self.paused_at = None
+            self.save()
+
+    def complete(self):
+        if not self.is_completed:
+            self.end_time = timezone.now()
+            self.is_completed = True
+            self.is_active = False
+            self.save()
+
     def __str__(self):
         return f"{self.user.username} - {self.test.title}"
 

@@ -7,7 +7,12 @@
 
     <!-- Running Clock -->
     <div class="clock">
-        <h3>Time Remaining: <span id="clock">00:00:00</span></h3>
+        <h3>Time Remaining: <span id="remaining_time"></span> minutes</h3>
+    </div>
+
+    <!-- Question Time Counter -->
+    <div class="clock">
+        <h3>Time Spent on Question: <span id="question_time"></span> seconds</h3>
     </div>
 
     <!-- Test Questions and Form -->
@@ -18,7 +23,7 @@
             <p>{{ question.text|safe }}</p>
             {% for answer in question.answers.all %}
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="answer" value="{{ answer.id }}" id="answer_{{ answer.id }}">
+                    <input class="form-check-input" type="radio" name="answer" value="{{ answer.id }}" id="answer_{{ answer.id }}" {% if answer.id == selected_answer_id %}checked{% endif %}>
                     <label class="form-check-label" for="answer_{{ answer.id }}">
                         {{ answer.text }}
                     </label>
@@ -28,37 +33,45 @@
 
         <!-- Hidden Input to Track Time Spent -->
         <input type="hidden" name="time_spent" id="time_spent" value="0">
+        <input type="hidden" name="question_time_spent" id="question_time_spent" value="{{ question_time_spent }}">
 
         <!-- Buttons -->
-        <button type="submit" class="btn btn-success mt-3">Next Question</button>
-        <button type="button" id="pause-test" class="btn btn-warning mt-3">Pause Test</button>
+        <button type="submit" name="next" class="btn btn-success mt-3">Next Question</button>
+        <button type="submit" name="previous" class="btn btn-primary mt-3">Previous Question</button>
+        <button type="submit" name="submit" class="btn btn-danger mt-3">Submit Test</button>
+        <button type="submit" name="pause" class="btn btn-warning mt-3">Pause Test</button>
     </form>
 </div>
 
 <script>
     // Initialize the start time and time spent
-    let startTime = Date.now();
-    let timeSpent = 0;
+    let startTime = Date.now() - ({{ test_attempt.time_spent.total_seconds }} * 1000);
+    let questionStartTime = Date.now() - ({{ question_time_spent }} * 1000);
     let maxTime = {{ test_attempt.test.duration.total_seconds }};
-    let timeRemaining = maxTime;
+    let timeSpent = {{ test_attempt.time_spent.total_seconds }};
+    let questionTimeSpent = {{ question_time_spent }};
 
-    // Function to format time as HH:MM:SS
-    function formatTime(seconds) {
-        let hrs = Math.floor(seconds / 3600);
-        let mins = Math.floor((seconds % 3600) / 60);
-        let secs = seconds % 60;
-        return [hrs, mins, secs]
-            .map(v => v < 10 ? "0" + v : v)
-            .join(":");
+    // Function to format time as minutes
+    function formatMinutes(seconds) {
+        return (seconds / 60).toFixed(2);
+    }
+
+    // Function to format time as seconds
+    function formatSeconds(milliseconds) {
+        return (milliseconds / 1000).toFixed(2);
     }
 
     // Function to update the clock
     function updateClock() {
-        timeSpent = Math.floor((Date.now() - startTime) / 1000);
-        timeRemaining = maxTime - timeSpent;
-        document.getElementById('clock').innerText = formatTime(timeRemaining);
+        let now = Date.now();
+        timeSpent = Math.floor((now - startTime) / 1000);
+        questionTimeSpent = Math.floor((now - questionStartTime) / 1000);
+        let remainingTime = maxTime - timeSpent;
+        document.getElementById('remaining_time').innerText = formatMinutes(remainingTime);
+        document.getElementById('question_time').innerText = formatSeconds(questionTimeSpent);
         document.getElementById('time_spent').value = timeSpent;
-        if (timeRemaining <= 0) {
+        document.getElementById('question_time_spent').value = questionTimeSpent;
+        if (remainingTime <= 0) {
             clearInterval(interval);
             document.getElementById('test-form').submit();  // Auto-submit form when time runs out
         }
@@ -66,17 +79,6 @@
 
     // Update the clock every second
     let interval = setInterval(updateClock, 1000);
-
-    // Pause button functionality
-    document.getElementById('pause-test').addEventListener('click', function() {
-        clearInterval(interval);
-        let confirmation = confirm("Do you want to pause the test?");
-        if (confirmation) {
-            window.location.href = "{% url 'pause_test' test_attempt.id %}";
-        } else {
-            interval = setInterval(updateClock, 1000);
-        }
-    });
 
     // Initial clock update
     updateClock();

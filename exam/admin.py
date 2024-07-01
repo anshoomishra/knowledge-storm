@@ -1,5 +1,5 @@
 from django.contrib import admin
-from exam.models import Test,TestSeries,TestType,Question,Answer,Subscription,TestAttempt
+from exam.models import Test,TestSeries,TestType,Question,Answer,Subscription,TestAttempt,QuestionAttempt
 # Register your models here.
 admin.site.register(Test)
 admin.site.register(TestType)
@@ -8,3 +8,4 @@ admin.site.register(Question)
 admin.site.register(Answer)
 admin.site.register(Subscription)
 admin.site.register(TestAttempt)
+admin.site.register(QuestionAttempt)
