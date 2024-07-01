@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>{{ test_attempt.test.title }}</h2>
+    <p>{{ test_attempt.test.description }}</p>
+
+    <!-- Running Clock -->
+    <div class="clock">
+        <h3>Time Remaining: <span id="clock">00:00:00</span></h3>
+    </div>
+
+    <!-- Test Questions and Form -->
+    <form method="post" id="test-form">
+        {% csrf_token %}
+        <!-- Current question -->
+        <div class="question">
+            <p>{{ question.text|safe }}</p>
+            {% for answer in question.answers.all %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="answer" value="{{ answer.id }}" id="answer_{{ answer.id }}">
+                    <label class="form-check-label" for="answer_{{ answer.id }}">
+                        {{ answer.text }}
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Hidden Input to Track Time Spent -->
+        <input type="hidden" name="time_spent" id="time_spent" value="0">
+
+        <!-- Buttons -->
+        <button type="submit" class="btn btn-success mt-3">Next Question</button>
+        <button type="button" id="pause-test" class="btn btn-warning mt-3">Pause Test</button>
+    </form>
+</div>
+
+<script>
+    // Initialize the start time and time spent
+    let startTime = Date.now();
+    let timeSpent = 0;
+    let maxTime = {{ test_attempt.test.duration.total_seconds }};
+    let timeRemaining = maxTime;
+
+    // Function to format time as HH:MM:SS
+    function formatTime(seconds) {
+        let hrs = Math.floor(seconds / 3600);
+        let mins = Math.floor((seconds % 3600) / 60);
+        let secs = seconds % 60;
+        return [hrs, mins, secs]
+            .map(v => v < 10 ? "0" + v : v)
+            .join(":");
+    }
+
+    // Function to update the clock
+    function updateClock() {
+        timeSpent = Math.floor((Date.now() - startTime) / 1000);
+        timeRemaining = maxTime - timeSpent;
+        document.getElementById('clock').innerText = formatTime(timeRemaining);
+        document.getElementById('time_spent').value = timeSpent;
+        if (timeRemaining <= 0) {
+            clearInterval(interval);
+            document.getElementById('test-form').submit();  // Auto-submit form when time runs out
+        }
+    }
+
+    // Update the clock every second
+    let interval = setInterval(updateClock, 1000);
+
+    // Pause button functionality
+    document.getElementById('pause-test').addEventListener('click', function() {
+        clearInterval(interval);
+        let confirmation = confirm("Do you want to pause the test?");
+        if (confirmation) {
+            window.location.href = "{% url 'pause_test' test_attempt.id %}";
+        } else {
+            interval = setInterval(updateClock, 1000);
+        }
+    });
+
+    // Initial clock update
+    updateClock();
+</script>
+{% endblock %}

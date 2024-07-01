@@ -23,10 +23,30 @@
     <script src="https://unpkg.com/scrollreveal"></script>
 
     <title>Blog Storm</title>
+    <style>
+        html, body {
+    height: 100%;
+    margin: 0;
+}
+        .wrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+        .content {
+    flex: 1;
+}
+
+.footer {
+    background-color: #f8f9fa;
+    padding: 1rem 0;
+    text-align: center;
+}
+    </style>
 </head>
 <body>
 {% include 'navigation.html' %}
-<div class="container">
+<div class="container wrapper">
 
     {% block content %}
 

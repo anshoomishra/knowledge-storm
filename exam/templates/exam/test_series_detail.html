@@ -1,19 +1,32 @@
 {% extends 'base.html' %}
-
+{% load examfilters %}
 {% block content %}
 <div class="container mt-5">
-    <h1>{{ test_series.title }}</h1>
-    <p>{{ test_series.description }}</p>
-    <a href="{% url 'subscribe_test_series' test_series.pk %}" class="btn btn-primary">Subscribe</a>
-    
-    <h2 class="mt-5">Tests in this Series</h2>
-    <ul class="list-group">
-        {% for test in tests %}
-            <li class="list-group-item">
-                <a href="{% url 'test_detail' test.pk %}">{{ test.title }}</a>
-                <p>{{ test.description }}</p>
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2>{{ test_series.title }}</h2>
+            <p>{{ test_series.description }}</p>
+            <ul class="list-group">
+                {% for test in tests %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ test.title }}</span>
+                        {% with test_attempt=test_attempts|get_item:test.id %}
+                            {% if test_attempt %}
+                                {% if not test_attempt.is_completed %}
+                                    <a href="{% url 'resume_test' test_attempt.id %}" class="btn btn-success">Resume Test</a>
+                                {% else %}
+                                    <span class="badge badge-success">Completed</span>
+                                {% endif %}
+                            {% else %}
+                                {% if test.questions.first %}
+                                    <a href="{% url 'take_test' test.id test.questions.first.id %}" class="btn btn-primary">Start Test</a>
+                                {% endif %}
+                            {% endif %}
+                        {% endwith %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </div>
 {% endblock %}
