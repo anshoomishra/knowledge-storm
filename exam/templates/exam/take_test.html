@@ -32,55 +32,81 @@
         </div>
 
         <!-- Hidden Input to Track Time Spent -->
-        <input type="hidden" name="time_spent" id="time_spent" value="0">
-        <input type="hidden" name="question_time_spent" id="question_time_spent" value="{{ question_time_spent }}">
+        <input type="hidden" name="time_spent" id="time_spent" value="{{test_attempt.remained_time}}">
+        <input type="hidden" name="question_time_spent" id="question_time_spent" value="{{question_time_spent}}">
 
         <!-- Buttons -->
         <button type="submit" name="next" class="btn btn-success mt-3">Next Question</button>
         <button type="submit" name="previous" class="btn btn-primary mt-3">Previous Question</button>
         <button type="submit" name="submit" class="btn btn-danger mt-3">Submit Test</button>
-        <button type="submit" name="pause" class="btn btn-warning mt-3">Pause Test</button>
+        <button type="submit" name="pause" class="btn btn-warning mt-3" id="submit-button">Pause Test</button>
     </form>
 </div>
 
 <script>
-    // Initialize the start time and time spent
-    let startTime = Date.now() - ({{ test_attempt.time_spent.total_seconds }} * 1000);
-    let questionStartTime = Date.now() - ({{ question_time_spent }} * 1000);
-    let maxTime = {{ test_attempt.test.duration.total_seconds }};
-    let timeSpent = {{ test_attempt.time_spent.total_seconds }};
-    let questionTimeSpent = {{ question_time_spent }};
+let attemptId = "{{ test_attempt.id }}";  // Pass the attempt ID to JavaScript
+let csrfToken = "{{ csrf_token }}";  // Pass the CSRF token to JavaScript
+let startTime = Date.now();
+let timeSpent = 0;
+let maxTime = {{ remained_time_seconds }};
+let timeRemaining = maxTime;
+let questionTimeSpent = {{question_time_spent}};
 
-    // Function to format time as minutes
-    function formatMinutes(seconds) {
-        return (seconds / 60).toFixed(2);
+// Establish WebSocket connection
+const socket = new WebSocket(
+    'ws://' + window.location.host + '/ws/test/' + attemptId + '/'
+);
+
+socket.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+    // Process incoming messages if necessary
+    console.log(data);
+};
+
+socket.onopen = function(e) {
+    console.log('WebSocket connection established');
+};
+
+socket.onclose = function(e) {
+    console.log('WebSocket connection closed');
+};
+
+socket.onerror = function(e) {
+    console.error('WebSocket error:', e);
+};
+
+function formatTime(seconds) {
+    let mins = Math.floor(seconds / 60);
+    let secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+
+function updateClock() {
+    let now = Date.now();
+    timeSpent = Math.floor((now - startTime) / 1000);
+    timeRemaining = maxTime - timeSpent;
+    questionTimeSpent = questionTimeSpent + 1
+    document.getElementById('remaining_time').innerText = formatTime(timeRemaining);
+    document.getElementById('question_time').innerText = formatTime(questionTimeSpent);
+    if (timeRemaining <= 0) {
+        clearInterval(timer);
+       document.getElementById('submit-button').click();
     }
+}
 
-    // Function to format time as seconds
-    function formatSeconds(milliseconds) {
-        return (milliseconds / 1000).toFixed(2);
-    }
+function sendUpdate() {
+    socket.send(JSON.stringify({
+        'time_spent': timeSpent,
+        'remaining_time': timeRemaining,
+        'question_time_spent': questionTimeSpent
+    }));
+}
 
-    // Function to update the clock
-    function updateClock() {
-        let now = Date.now();
-        timeSpent = Math.floor((now - startTime) / 1000);
-        questionTimeSpent = Math.floor((now - questionStartTime) / 1000);
-        let remainingTime = maxTime - timeSpent;
-        document.getElementById('remaining_time').innerText = formatMinutes(remainingTime);
-        document.getElementById('question_time').innerText = formatSeconds(questionTimeSpent);
-        document.getElementById('time_spent').value = timeSpent;
-        document.getElementById('question_time_spent').value = questionTimeSpent;
-        if (remainingTime <= 0) {
-            clearInterval(interval);
-            document.getElementById('test-form').submit();  // Auto-submit form when time runs out
-        }
-    }
-
-    // Update the clock every second
-    let interval = setInterval(updateClock, 1000);
-
-    // Initial clock update
+let timer = setInterval(() => {
     updateClock();
+    sendUpdate();
+}, 1000);
+
 </script>
 {% endblock %}

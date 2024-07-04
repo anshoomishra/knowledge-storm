@@ -1,11 +1,16 @@
+import json
+from datetime import timedelta
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, CreateView, TemplateView
 from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from .models import TestSeries, Test, Subscription, TestType, TestAttempt, QuestionAttempt, Question
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
+
 
 class TestSeriesListView(ListView):
     model = TestSeries
@@ -20,6 +25,7 @@ class TestSeriesDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         tests = self.object.tests.all()
+        print("tests",tests)
         test_attempts = {
             test.id: test.test_attempts.filter(user=self.request.user).first()
             for test in tests
@@ -82,6 +88,8 @@ class StartTestView(View):
     def get(self, request, test_id):
         test = get_object_or_404(Test, id=test_id)
         test_attempt = TestAttempt.objects.create(user=request.user, test=test)
+        test_attempt.remained_time = test.duration
+        test_attempt.save()
         first_question = test.questions.first()
         return redirect('take_test', test_attempt.id, first_question.id)
 
@@ -94,23 +102,19 @@ class TakeTestView(View):
 
         question = get_object_or_404(Question, id=question_id)
         test_attempt.current_question = question
+        remained_time_seconds = int(test_attempt.remained_time.total_seconds())
         test_attempt.save()
 
-        # Get the last attempt for this question if it exists
+        # Get the last QuestionAttempt if exists
         question_attempt = QuestionAttempt.objects.filter(test_attempt=test_attempt, question=question).last()
-        if question_attempt:
-            question_time_spent = question_attempt.time_spent.total_seconds()
-            selected_answer_id = question_attempt.answer_id
-        else:
-            question_time_spent = 0
-            selected_answer_id = None
+        question_time_spent = question_attempt.time_spent.total_seconds() if question_attempt else 0
 
         context = {
             'test_attempt': test_attempt,
             'question': question,
-            'remaining_time': (test_attempt.test.duration - test_attempt.time_spent).total_seconds(),
+            'selected_answer_id': question_attempt.answer_id if question_attempt else None,
             'question_time_spent': question_time_spent,
-            'selected_answer_id': selected_answer_id
+            'remained_time_seconds':remained_time_seconds
         }
         return render(request, 'exam/take_test.html', context)
 
@@ -121,23 +125,20 @@ class TakeTestView(View):
 
         question = get_object_or_404(Question, id=question_id)
         answer_id = request.POST.get('answer')
-        time_spent = int(request.POST.get('time_spent', 0))
-        question_time_spent = int(request.POST.get('question_time_spent', 0))
 
-        # Create or update the QuestionAttempt record
+        time_spent = request.POST.get('time_spent', 0)
+        time_spent_seconds = int(time_spent)
+        # Update or create the QuestionAttempt
         question_attempt, created = QuestionAttempt.objects.update_or_create(
             test_attempt=test_attempt,
             question=question,
             defaults={
                 'answer_id': answer_id,
-                'time_spent': timezone.timedelta(seconds=question_time_spent),
+                'time_spent': timezone.timedelta(seconds=time_spent_seconds),
                 'answered_at': timezone.now()
             }
         )
 
-        # Update the overall time spent
-        test_attempt.time_spent += timezone.timedelta(seconds=time_spent)
-        test_attempt.save()
 
         # Handle navigation to the next or previous question
         if 'next' in request.POST:
@@ -163,10 +164,6 @@ class TakeTestView(View):
             return redirect('pause_test', attempt_id=test_attempt.id)
 
         return redirect('take_test', attempt_id=test_attempt.id, question_id=question.id)
-
-
-
-
 class ResumeTestView(View):
     def get(self, request, attempt_id):
         test_attempt = get_object_or_404(TestAttempt, id=attempt_id, user=request.user)
@@ -198,3 +195,19 @@ class TestCompleteView(View):
         }
         return render(request, 'exam/test_complete.html', context)
 
+@csrf_exempt
+def update_timer(request, attempt_id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            print(data)
+            test_attempt = TestAttempt.objects.get(id=attempt_id, user=request.user)
+            test_attempt.time_spent += timezone.timedelta(seconds=data['time_spent'])
+            test_attempt.remained_time = timezone.timedelta(seconds=data['remaining_time'])
+            test_attempt.save()
+            return JsonResponse({'status': 'success'})
+        except TestAttempt.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'TestAttempt not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)

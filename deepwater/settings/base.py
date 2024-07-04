@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     "crispy_forms",
     "crispy_bootstrap5",
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -171,3 +172,10 @@ EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'anshu@knowledgestorm.in'
 EMAIL_HOST_PASSWORD = 'Anshoo12@#'
+ASGI_APPLICATION = 'deepwater.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}

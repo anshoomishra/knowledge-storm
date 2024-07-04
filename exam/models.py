@@ -104,6 +104,7 @@ class TestAttempt(models.Model):
     current_question = models.ForeignKey(Question, on_delete=models.SET_NULL, null=True, blank=True, related_name='current_attempts')
     is_active = models.BooleanField(default=True)
     is_completed = models.BooleanField(default=False)
+    remained_time = models.DurationField(default=timedelta())
 
     @property
     def remaining_time(self):

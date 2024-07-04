@@ -8,4 +8,4 @@ python manage.py migrate
 python manage.py collectstatic --noinput
 
 # Start Gunicorn
-exec gunicorn deepwater.wsgi:application --bind 0.0.0.0:8000
+exec daphne -b 0.0.0.0 -p 8000 deepwater.asgi:application
