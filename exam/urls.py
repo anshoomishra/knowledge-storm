@@ -20,5 +20,5 @@ urlpatterns = [
     path('resume-test/<uuid:attempt_id>/', ResumeTestView.as_view(), name='resume_test'),
     path('test-complete/<uuid:attempt_id>/', TestCompleteView.as_view(), name='test_complete'),
     path('pause-test/<uuid:attempt_id>/', PauseTestView.as_view(), name='pause_test'),
-    path('update_timer//<uuid:attempt_id>/', update_timer, name='update_timer'),
+    path('update_timer/<uuid:attempt_id>/', update_timer, name='update_timer'),
 ]

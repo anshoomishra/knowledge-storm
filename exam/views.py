@@ -84,7 +84,7 @@ class TestResultView(TemplateView):
         # Add logic to retrieve and display test results
         context['test'] = test
         return context
-class StartTestView(View):
+class StartTestView(LoginRequiredMixin,View):
     def get(self, request, test_id):
         test = get_object_or_404(Test, id=test_id)
         test_attempt = TestAttempt.objects.create(user=request.user, test=test)
