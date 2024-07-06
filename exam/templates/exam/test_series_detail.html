@@ -2,58 +2,74 @@
 {% load examfilters %}
 {% block content %}
 <div class="container mt-5">
-    <h2>{{ test_series.title }}</h2>
-    <p>{{ test_series.description }}</p>
-
     <div class="row">
-        <div class="col-md-8 offset-md-2">
+
+        <div class="col-md-8 offset-md-2 shadow-sm mb-5">
+            <div class="row bg-orange py-5">
+               <h2 class="pathway-extreme ts-title-h2">{{ test_series.title }}</h2>
+                <span class="pathway-extreme mb-3">last updated at: {{test_series.updated_at}}</span>
+                <div class="row">
+                    <div class="col-6">
+                        <span class="pathway-extreme"> Total test: {{test_series.no_of_tests}} | </span> <span class="badge bg-success"> Free Test {{test_series.no_of_free_tests}} </span>
+                    </div>
+                    <div class="col-6">
+
+                    </div>
+                </div>
+            </div>
+
+
             <ul class="list-group">
                 {% for test in tests %}
-                    <li class="list-group-item mb-3 border">
-                        <div class="row">
-                            <!-- First Row: Badge for Free Test -->
-                            <div class="col-12">
-                                {% if test.test_type.is_free_test %}
-                                    <span class="badge bg-info">Free</span>
-                                {% elif not test.test_type.is_free_test %}
-                                    <span class="badge bg-danger">Subscribe</span>
-                                {% endif %}
+                <li class="list-group-item mb-3 border">
+                    <div class="row">
+                        <!-- First Row: Badge for Free Test -->
+                        <div class="col-12">
+                            {% if test.test_type.is_free_test %}
+                            <span class="badge bg-info">Free</span>
+                            {% elif not test.test_type.is_free_test %}
+                            <span class="badge bg-danger">Subscribe</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row mt-2 justify-content-between align-items-center pathway-extreme">
+                        <!-- Second Row: Test Title and Button -->
+                        <div class="col-9">
+                            <span> <strong>{{ test.title }}</strong> </span>
+
+                            <div class="row mt-2">
+                                <!-- Third Row: Test Duration, Total Time, and Number of People -->
+                                <div class="col-4 text-success">
+                                    <span>Duration: {{ test.duration }}</span>
+                                </div>
+                                <div class="col-4 text-danger">
+                                    <span>Total Marks: {{ test.total_marks }}</span>
+
+                                </div>
+                                <div class="col-4 text-info">
+                                    <span>Participants: {{ test.test_attempts.count }}</span>
+
+                                </div>
                             </div>
                         </div>
-                        <div class="row mt-2">
-                            <!-- Second Row: Test Title and Button -->
-                            <div class="col-6">
-                                <span>{{ test.title }}</span>
-                            </div>
-                            <div class="col-6 text-right">
-                                {% with test_attempts|get_item:test.id as test_attempt %}
-                                    {% if test_attempt %}
-                                        {% if not test_attempt.is_completed %}
-                                            <a href="{% url 'resume_test' test_attempt.id %}" class="btn btn-success">Resume Test</a>
-                                        {% else %}
-                                            <span class="badge badge-success">Completed</span>
-                                        {% endif %}
-                                    {% else %}
-                                        {% if test.questions.first %}
-                                            <a href="{% url 'start_test' test.id %}" class="btn btn-primary">Start Test</a>
-                                        {% endif %}
-                                    {% endif %}
-                                {% endwith %}
-                            </div>
+                        <div class="col-3 d-flex justify-content-center">
+                            {% with test_attempts|get_item:test.id as test_attempt %}
+                            {% if test_attempt %}
+                            {% if not test_attempt.is_completed %}
+                            <a href="{% url 'resume_test' test_attempt.id %}" class="btn btn-success pathway-extreme">Resume Test</a>
+                            {% else %}
+                            <span class="badge badge-success">Completed</span>
+                            {% endif %}
+                            {% else %}
+                            {% if test.questions.first %}
+                            <a href="{% url 'start_test' test.id %}" class="btn btn-primary pathway-extreme">Start Test</a>
+                            {% endif %}
+                            {% endif %}
+                            {% endwith %}
                         </div>
-                        <div class="row mt-2">
-                            <!-- Third Row: Test Duration, Total Time, and Number of People -->
-                            <div class="col-4">
-                                <strong>Duration:</strong> {{ test.duration }}
-                            </div>
-                            <div class="col-4">
-                                <strong>Total Marks:</strong> {{ test.total_marks }}
-                            </div>
-                            <div class="col-4">
-                                <strong>No. of Participants:</strong> {{ test.test_attempts.count }}
-                            </div>
-                        </div>
-                    </li>
+                    </div>
+
+                </li>
                 {% endfor %}
             </ul>
         </div>
