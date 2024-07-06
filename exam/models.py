@@ -106,6 +106,12 @@ class TestAttempt(models.Model):
     is_completed = models.BooleanField(default=False)
     remained_time = models.DurationField(default=timedelta())
 
+    def set_duration_from_string(self, duration_str):
+        hours, minutes, seconds = map(int, duration_str.split(':'))
+        duration = timedelta(hours=hours, minutes=minutes, seconds=seconds)
+        self.remained_time = duration
+        self.save()
+
     @property
     def remaining_time(self):
         total_time = self.test.duration.total_seconds()

@@ -126,19 +126,14 @@ class TakeTestView(View):
         question = get_object_or_404(Question, id=question_id)
         answer_id = request.POST.get('answer')
 
-        time_spent = request.POST.get('time_spent', 0)
-        time_spent_seconds = int(time_spent)
-        # Update or create the QuestionAttempt
         question_attempt, created = QuestionAttempt.objects.update_or_create(
             test_attempt=test_attempt,
             question=question,
             defaults={
                 'answer_id': answer_id,
-                'time_spent': timezone.timedelta(seconds=time_spent_seconds),
                 'answered_at': timezone.now()
             }
         )
-
 
         # Handle navigation to the next or previous question
         if 'next' in request.POST:

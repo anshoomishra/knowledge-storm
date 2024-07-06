@@ -38,6 +38,9 @@ class TestConsumer(AsyncWebsocketConsumer):
         await self.update_question_attempt(time_spent_timedelta)
 
         # Send message to room group
+        print(remaining_time_timedelta)
+        print(time_spent_timedelta)
+
         await self.channel_layer.group_send(
             self.room_group_name,
             {
