@@ -1,4 +1,4 @@
-<nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark" style="border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
     <div class="container">
         <a class="navbar-brand" href="#">KS</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -36,14 +36,10 @@
                      <a class="nav-link" href="{% url 'login' %}">Login</a>
                 </li>
                 <li class="nav-item">
-                     <a class="nav-link btn btn-primary btn-sm rounded-0" href="{% url 'account_signup' %}">Sign Up</a>
+                     <a class="nav-link btn btn-primary btn-sm rounded-0" href="{% url 'signup' %}">Sign Up</a>
                 </li>
                 {% endif %}
             </ul>
-            <form class="d-flex ms-auto">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-light rounded-0 btn-sm" type="submit">Search</button>
-            </form>
         </div>
     </div>
 </nav>
