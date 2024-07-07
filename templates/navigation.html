@@ -27,8 +27,8 @@
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" aria-expanded="false">
                         {{user.username}}
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    <ul class="dropdown-menu bg-dark dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li class="bg-dark"><a class="dropdown-item bg-dark" href="{% url 'logout' %}">Logout</a></li>
                     </ul>
                 </li>
                 {% else %}

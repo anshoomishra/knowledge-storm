@@ -69,7 +69,6 @@
             flex: 1;
         }
         .footer {
-            background-color: #2A2A2A; /* Dark gray background for footer */
             color: #FFFFFF; /* White text for footer */
             padding: 1rem 0;
             text-align: center;
@@ -79,11 +78,9 @@
 <body>
 {% include 'navigation.html' %}
 <div class="container wrapper">
-
     {% block content %}
 
     {% endblock %}
-
 </div>
 {% include 'footer.html' %}
 <script src="{% static 'blog/js/effect.js' %}"></script>
