@@ -38,7 +38,7 @@ class CreateViewPermissionMixin(DispatchRequest):
         return False
 
 
-class DetailViewPermissionMixin(DispatchRequest):
+class UpdateViewPermissionMixin(DispatchRequest):
     def has_permission(self):
         print("in has permission")
         print(f"User: {self.request.user}, Authenticated: {self.request.user.is_authenticated}")
