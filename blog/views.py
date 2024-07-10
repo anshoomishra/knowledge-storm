@@ -8,7 +8,7 @@ from django.http import HttpResponse
 
 from blog.forms import ArticleForm
 from blog.models import Article, SavedArticle
-from .permissions import CreateViewPermissionMixin,DetailViewPermissionMixin
+from .permissions import CreateViewPermissionMixin,UpdateViewPermissionMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .forms import ArticleForm
@@ -39,7 +39,7 @@ class ArticleCreateView(LoginRequiredMixin, CreateViewPermissionMixin, CreateVie
         return super().form_valid(form)
 
 
-class ArticleUpdateView(LoginRequiredMixin, DetailViewPermissionMixin, UpdateView):
+class ArticleUpdateView(LoginRequiredMixin, UpdateViewPermissionMixin, UpdateView):
     model = Article
     form_class = ArticleForm
     template_name = 'blog/article_form.html'
@@ -55,6 +55,8 @@ class ArticleDetailView(DetailView):
     template_name = 'blog/article_detail.html'
     context_object_name = 'article'
 
+
+
     def get(self, request, *args, **kwargs):
         # Get the article object
         self.object = self.get_object()
@@ -68,6 +70,13 @@ class ArticleDetailView(DetailView):
         # Call the super class's get method to proceed with normal processing
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        article = self.get_object()
+        context['related_articles'] = Article.objects.get_related_articles(article)
+        return context
+
 
 
 class ArticleListView(ListView):

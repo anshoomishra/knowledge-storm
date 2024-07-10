@@ -55,3 +55,13 @@
     opacity: 1;
     transform: none;
 }
+
+.logo{
+    width:60px;
+    height:60px;
+    background:#295683;
+    border-radius:4px;
+}
+.blog-category{
+font-size:14px;
+}
