@@ -1,0 +1,33 @@
+
+<div class="card mb-3">
+    <div class="card-body">
+        <p class="card-text">{{ comment.text }}</p>
+        <p class="card-text"><small class="text-muted">By {{ comment.user.username }} on {{ comment.created_at }}</small></p>
+        <button class="btn btn-link reply-button" data-comment-id="{{ comment.id }}">Reply</button>
+
+        <div class="reply-form d-none" id="reply-form-{{ comment.id }}">
+            <form method="post" action="{% url 'article_detail' article.id %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="hidden" name="parent" value="{{ comment.id }}">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+
+        {% for reply in comment.comments_comment.all %}
+            {% include 'blog/comment.html' with comment=reply %}
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.reply-button').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var formId = "reply-form-" + button.getAttribute("data-comment-id");
+                var form = document.getElementById(formId);
+                form.classList.toggle("d-none");
+            });
+        });
+    });
+</script>

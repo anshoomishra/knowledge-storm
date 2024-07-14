@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.views.generic import TemplateView, CreateView, UpdateView, DetailView, ListView
 from django.http import HttpResponse
 
-from blog.forms import ArticleForm
+from blog.forms import ArticleForm, CommentForm
 from blog.models import Article, SavedArticle
 from .permissions import CreateViewPermissionMixin,UpdateViewPermissionMixin
 from django.urls import reverse_lazy
@@ -55,29 +55,33 @@ class ArticleDetailView(DetailView):
     template_name = 'blog/article_detail.html'
     context_object_name = 'article'
 
-
-
     def get(self, request, *args, **kwargs):
-        # Get the article object
         self.object = self.get_object()
-
-        # Increment the views count
         self.object.views += 1
-
-        # Save the updated article
         self.object.save(update_fields=['views'])
-
-        # Call the super class's get method to proceed with normal processing
         context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.article = self.object
+            comment.user = request.user
+            comment.save()
+            return redirect('article_detail', pk=self.object.pk)
+        context = self.get_context_data(object=self.object)
+        context['form'] = form
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         article = self.get_object()
         context['related_articles'] = Article.objects.get_related_articles(article)
+        context['comments'] = article.articles_comment.filter(parent__isnull=True)
+        context['form'] = CommentForm()
         return context
-
-
 
 class ArticleListView(ListView):
     model = Article
