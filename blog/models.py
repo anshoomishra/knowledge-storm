@@ -4,10 +4,6 @@ from django.utils import timezone
 from ckeditor.fields import RichTextField
 import uuid
 from django.db.models import Q
-import torch
-from transformers import BertTokenizer, BertModel
-import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity
 
 class ArticleQuerySet(models.QuerySet):
     def published(self):
@@ -66,17 +62,6 @@ class Tags(models.Model):
 
     def __str__(self):
         return self.text
-class Comment(models.Model):
-    id = models.UUIDField(primary_key=True,default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(User,related_name="user_comments",null=True,blank=True,on_delete=models.SET_NULL)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    text = models.TextField(max_length=1000)
-    comment = models.ForeignKey("self",null=True,blank=True,related_name="comments_comment",on_delete=models.SET_NULL)
-
-    def __str__(self):
-        return f"{self.id}"
-
 
 class Article(models.Model):
     STATUS_CHOICES = [
@@ -96,7 +81,6 @@ class Article(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
     views = models.IntegerField(default=0)
     keywords = models.ManyToManyField(Tags,null=True,blank=True)
-    comment = models.ForeignKey(Comment,null=True,blank=True,related_name="articles_comment",on_delete=models.CASCADE)
     objects = ArticleManager()
 
 
@@ -112,37 +96,19 @@ class Article(models.Model):
             ('can_update_article', 'Can update article'),
         ]
 
-    # def preprocess_text(self):
-    #     # Combine title, description, and content for a comprehensive representation
-    #     text = f"{self.title} {self.description} {self.content}"
-    #     return text
-    #
-    # def get_article_embedding(self):
-    #     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-    #     model = BertModel.from_pretrained('bert-base-uncased')
-    #
-    #     text = self.preprocess_text()
-    #     inputs = tokenizer(text, return_tensors='pt', max_length=512, truncation=True, padding='max_length')
-    #
-    #     with torch.no_grad():
-    #         outputs = model(**inputs)
-    #
-    #     embeddings = outputs.last_hidden_state.mean(dim=1).numpy()
-    #     return embeddings
-    #
-    # @staticmethod
-    # def get_related_articles(article, top_k=5):
-    #     all_articles = Article.objects.exclude(id=article.id)
-    #     article_embedding = article.get_article_embedding()
-    #
-    #     similarities = []
-    #     for other_article in all_articles:
-    #         other_embedding = other_article.get_article_embedding()
-    #         similarity = cosine_similarity(article_embedding, other_embedding)[0][0]
-    #         similarities.append((other_article, similarity))
-    #
-    #     similarities.sort(key=lambda x: x[1], reverse=True)
-    #     return [article for article, _ in similarities[:top_k]]
+
+class Comment(models.Model):
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User,related_name="user_comments",null=True,blank=True,on_delete=models.SET_NULL)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    text = models.TextField(max_length=1000)
+    parent = models.ForeignKey("self",null=True,blank=True,related_name="comments_comment",on_delete=models.SET_NULL)
+    article = models.ForeignKey(Article, null=True, blank=True, related_name="articles_comment",
+                                on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.id}"
+
 
 class SavedArticle(models.Model):
     user = models.ForeignKey(User,null=True,blank=True,on_delete=models.CASCADE)

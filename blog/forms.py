@@ -3,6 +3,7 @@ from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django.forms import ModelForm
 from django import forms
 from blog.models import Article
+from .models import Comment
 from ckeditor.fields import RichTextFormField
 
 
@@ -16,3 +17,14 @@ class ArticleForm(ModelForm):
             "description": forms.TextInput(attrs={"class": "form-control", "place-holder": "title"}),
 
         }
+# forms.py
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text', 'parent']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['parent'].required = False
+        self.fields['parent'].widget = forms.HiddenInput()

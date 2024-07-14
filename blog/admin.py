@@ -9,10 +9,7 @@ class ArticleAdmin(admin.ModelAdmin):
     search_fields = ('title',)
     list_filter = ('created_at', 'updated_at')
 
-    class Media:
-        js = [
-            '//cdn.ckeditor.com/4.14.0/standard/ckeditor.js',
-    ]
+
 
 @admin.register(SavedArticle)
 class SavedArticleAdmin(admin.ModelAdmin):
