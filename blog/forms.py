@@ -23,6 +23,11 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['text', 'parent']
+        widgets = {
+            "text": forms.Textarea(attrs={"class": "form-control", "place-holder": "comment"}),
+
+
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

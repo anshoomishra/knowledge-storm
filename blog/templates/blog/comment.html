@@ -1,4 +1,4 @@
-
+{% load crispy_forms_tags %}
 <div class="card mb-3">
     <div class="card-body">
         <p class="card-text">{{ comment.text }}</p>
@@ -8,7 +8,7 @@
         <div class="reply-form d-none" id="reply-form-{{ comment.id }}">
             <form method="post" action="{% url 'article_detail' article.id %}">
                 {% csrf_token %}
-                {{ form.as_p }}
+                {{ form | crispy }}
                 <input type="hidden" name="parent" value="{{ comment.id }}">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
