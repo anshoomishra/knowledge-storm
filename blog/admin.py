@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Article,SavedArticle,Tags
+from .models import Article,SavedArticle,Tags,Comment
 
 
 
@@ -19,3 +19,6 @@ class SavedArticleAdmin(admin.ModelAdmin):
 class SavedArticleAdmin(admin.ModelAdmin):
     list_display = ('id','text')
 
+@admin.register(Comment)
+class Comment(admin.ModelAdmin):
+    list_display = ('id','text')
