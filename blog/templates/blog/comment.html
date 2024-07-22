@@ -3,14 +3,14 @@
     <div class="card-body">
         <p class="card-text">{{ comment.text }}</p>
         <p class="card-text"><small class="text-muted">By {{ comment.user.username }} on {{ comment.created_at }}</small></p>
-        <button class="btn btn-link reply-button" data-comment-id="{{ comment.id }}">Reply</button>
+        <button class="btn text-white reply-button" data-comment-id="{{ comment.id }}">Reply</button>
 
         <div class="reply-form d-none" id="reply-form-{{ comment.id }}">
             <form method="post" action="{% url 'article_detail' article.id %}">
                 {% csrf_token %}
                 {{ form | crispy }}
                 <input type="hidden" name="parent" value="{{ comment.id }}">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn text-white">Submit</button>
             </form>
         </div>
 

@@ -65,3 +65,10 @@
 .blog-category{
 font-size:14px;
 }
+.card-title a{
+ color:#295683 !important;
+}
+.btn{
+ background-color:#295683 !important;
+}
+

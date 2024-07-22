@@ -8,26 +8,36 @@
         <p>Last updated on: <span id="last-updated-date">{{ last_updated_date }}</span></p>
     </div>
 
-    <div class="about-me text-center mt-4">
-        <p>I am a Django developer with over 5 years of experience. I specialize in Django REST Framework and have extensive experience developing applications using DRF, AWS, Jenkins, and Docker.</p>
+    <div class="about-me text-center mt-4 p-3 d-flex justify-content-center shadow-sm">
+        <p class="text-white w-50">I am a Django developer with over 5 years of experience. I specialize in Django REST Framework and have extensive experience developing applications using DRF, AWS, Jenkins, and Docker.</p>
     </div>
 
     <div class="professional-journey text-center mt-5">
-        <h3>My Professional Journey</h3>
+        <h3 class="mb-3">My Professional Journey</h3>
         <div class="timeline">
             <div class="timeline-item">
-                <h4>Zenatix (SR Backend Engineer)</h4>
-                <p>Last 2 years</p>
+                <h2>Zenatix Pvt Ltd(Sr Backend Engineer)</h2>
+                <p>Jan 2023 - Present</p>
+                <p>Developed Oauth2.0 based user management system</p>
             </div>
+            <hr class="danger">
             <div class="timeline-item">
-                <h4>Global Logic (SR Python Developer)</h4>
-                <p>Previous 2 years</p>
+                <h2>Global Logic (Sr Python Developer)</h2>
+                <p>Oct 2020 - Dec 2023</p>
+                <p>Integration of Order With Google</p>
             </div>
+            <hr class="danger">
+            <div class="timeline-item">
+                <h2>XtremeSoftech Pvt Ltd</h2>
+                <p>May 2019 - Aug 2020</p>
+                <p>School Management System</p>
+            </div>
+
         </div>
     </div>
 
     <div class="skills text-center mt-5">
-        <h3>My Skills</h3>
+        <h3 class="mb-3 skills">My Skills</h3>
         <div class="card-deck">
             <div class="card">
                 <div class="card-body">
@@ -62,76 +72,6 @@
         <p>B.Tech in 2015 from PSIT Kanpur</p>
     </div>
 </div>
-
-<style>
-.container-about-us {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-}
-
-.timeline {
-    display: flex;
-    flex-direction: column;
-    align-items: left;
-    border-left: 2px solid #007bff;
-}
-
-.timeline-item {
-    position: relative;
-    padding: 10px 20px;
-    margin: 20px 0;
-
-}
-
-.timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -8px;
-    top: 10px;
-    width: 16px;
-    height: 16px;
-    background-color: #007bff;
-    border-radius: 50%;
-}
-
-.card-deck {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.card {
-    margin: 10px;
-    flex: 1 0 150px;
-    border: 1px solid #007bff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
-}
-
-.card:hover {
-    transform: scale(1.05);
-}
-
-.card-title {
-    color: #007bff;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.rounded-circle {
-    border-radius: 50%;
-}
-
-#last-updated-date {
-    font-weight: bold;
-}
-</style>
 
 <script>
     document.getElementById('last-updated-date').textContent = new Date().toLocaleDateString();

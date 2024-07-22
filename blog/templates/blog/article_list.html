@@ -13,11 +13,11 @@
                     <div class="col-md-6 mb-3" data-sr>
                         <div class="card shadow-sm">
                             <div class="card-body">
-                                <h3 class="card-title"><a href="{% url 'article_detail' article.pk %}">{{ article.title }}</a></h3>
+                                <h2 class="card-title"><a class="text-smoke nav-link p-0" href="{% url 'article_detail' article.pk %}">{{ article.title }}</a></h2>
                                 <p class="card-text"><strong>Author:</strong> {{ article.created_by.username }}</p>
-                                <p class="card-text"><strong>Created At:</strong> {{ article.created_at }}</p>
+                                <p class="ca rd-text"><strong>Created At:</strong> {{ article.created_at }}</p>
                                 <p class="card-text"><strong>Views:</strong> {{ article.views }}</p>
-                                <a href="{% url 'article_detail' article.pk %}" class="btn btn-info rounded-0 btn-block">Read More</a>
+                                <a href="{% url 'article_detail' article.pk %}" class="btn text-white btn-block">Read More</a>
                             </div>
                         </div>
                     </div>
