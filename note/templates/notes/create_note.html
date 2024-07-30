@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Note{% endblock %}
+
+{% block content %}
+  <h2 class="mt-5">Create Note</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.body.addEventListener('mouseup', function() {
+            var selectedText = window.getSelection().toString();
+            if (selectedText) {
+                document.getElementById('id_text').value = selectedText;
+            }
+        });
+    });
+  </script>
+{% endblock %}

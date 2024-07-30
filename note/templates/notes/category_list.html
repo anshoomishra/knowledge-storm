@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+  <h2 class="mt-5">Categories</h2>
+  <ul>
+    {% for category in categories %}
+      <li>{{ category.get_full_path }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -44,6 +44,18 @@
     padding: 1rem 0;
     text-align: center;
 }
+        .plus-symbol {
+            display: none;
+            position: absolute;
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -55,6 +67,79 @@
     {% endblock %}
 
 </div>
+<div class="plus-symbol" id="plus-symbol">+</div>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="noteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="noteModalLabel">Create Note</h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="noteForm" method="post" action="{% url 'create_note' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_title">Title</label>
+                            <input type="text" class="form-control" id="id_title" name="title">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_text">Text</label>
+                            <textarea class="form-control" id="id_text" name="text"></textarea>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="id_category">Category</label>
+
+                            <select class="form-control" id="id_category" name="category">
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.get_full_path }}</option>
+                                {% endfor %}
+                            </select>
+                        <div class="plus-symbol" id="plus-symbol-category">+</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Bootstrap Modal for Category -->
+    <div class="modal fade" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="categoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="categoryModalLabel">Create Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="categoryForm" method="post" action="{% url 'create_category' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_name">Category Name</label>
+                            <input type="text" class="form-control" id="id_name" name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_parent">Parent Category</label>
+                            <select class="form-control" id="id_parent" name="parent">
+                                <option value="">None</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.get_full_path }}</option>
+                                {% endfor %}
+                            </select>
+
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 {% include 'footer.html' %}
 <script src="{% static 'blog/js/effect.js' %}">
 
@@ -63,6 +148,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 {% block jsfiles %}
 <script src="{% static 'navigation/js/script.js' %}"></script>
 {% endblock %}
@@ -78,5 +165,39 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+<script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const plusSymbol = document.getElementById('plus-symbol');
+            const plusSymbolCategory = document.getElementById('plus-symbol-category');
+            const modal = document.getElementById('noteModal');
+            const categoryModal = document.getElementById('categoryModal');
+            const textInput = document.getElementById('id_text');
+
+            document.body.addEventListener('mouseup', function(event) {
+                const selectedText = window.getSelection().toString();
+                if (selectedText) {
+                    const rect = window.getSelection().getRangeAt(0).getBoundingClientRect();
+                    plusSymbol.style.top = `${rect.top + window.scrollY - 10}px`;
+                    plusSymbol.style.left = `${rect.right + window.scrollX + 10}px`;
+                    plusSymbol.style.display = 'block';
+                    plusSymbolCategory.style.display = 'block';
+                    textInput.value = selectedText;
+                } else {
+                    plusSymbol.style.display = 'none';
+                }
+            });
+
+            plusSymbol.addEventListener('click', function() {
+                $('#noteModal').modal('show');
+            });
+            plusSymbolCategory.addEventListener('click', function() {
+                $('#categoryModal').modal('show');
+            });
+        });
+
+        function closeModal() {
+            $('#noteModal').modal('hide');
+        }
+    </script>
 </body>
 </html>

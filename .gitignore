@@ -35,4 +35,5 @@ venv.bak/
 # IDEs
 .vscode/
 .idea/
+build.sh
 
