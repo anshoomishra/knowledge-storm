@@ -28,4 +28,5 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('exam/', include('exam.urls')),
     path('about-us/', AboutUSTemplate.as_view(),name="about-us"),
+    path('', include('note.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
