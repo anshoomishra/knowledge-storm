@@ -13,6 +13,8 @@ pipeline {
         DB_PORT = credentials('DB_PORT')
         ALLOWED_HOSTS = credentials('ALLOWED_HOSTS')
         DJANGO_ENV = credentials('DJANGO_ENV')
+        CLIENT_ID = credentials('CLIENT_ID')
+        SECRET = credentials('SECRET')
     }
 
     stages {
