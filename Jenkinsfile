@@ -37,6 +37,8 @@ pipeline {
                             --build-arg DB_PORT=${DB_PORT} \
                             --build-arg DJANGO_ENV=${DJANGO_ENV} \
                             --build-arg ALLOWED_HOSTS=${ALLOWED_HOSTS} \
+                            --build-arg CLIENT_ID=${CLIENT_ID} \
+                            --build-arg SECRET=${SECRET} \
                             .
                         '''
             }
