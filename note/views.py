@@ -1,57 +1,121 @@
-from django.shortcuts import render, redirect
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import JsonResponse
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.csrf import csrf_protect
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .models import Note, Category
 from .forms import NoteForm, CategoryForm
-from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .permissions import UserIsOwnerMixin
 
 
-@login_required
-def create_note(request):
-    if request.method == 'POST':
-        form = NoteForm(request.POST, user=request.user)
-        if form.is_valid():
-            note = form.save(commit=False)
-            note.user = request.user
-            note.text = request.POST.get('text')
-            note.save()
-            return redirect('note_list')
-    else:
-        form = NoteForm(user=request.user)
-    return render(request, 'notes/create_note.html', {'form': form})
+class NoteListView(LoginRequiredMixin, ListView):
+    model = Note
+    context_object_name = 'notes'
+    template_name = 'notes/note_list.html'
+    paginate_by = 5  # Number of notes per page
+
+    def get_queryset(self):
+        query = self.request.GET.get('query')
+        category_id = self.request.GET.get('category')
+        notes = Note.objects.filter(user=self.request.user)
+
+        if query:
+            notes = notes.filter(Q(title__icontains=query) | Q(text__icontains=query))
+        if category_id:
+            notes = notes.filter(category_id=category_id)
+        return notes
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        categories = Category.objects.filter(user=self.request.user)
+
+        # Add pagination for categories
+        paginator = Paginator(categories, 5)  # 5 categories per page
+        page_number = self.request.GET.get('category_page')
+        context['categories_page_obj'] = paginator.get_page(page_number)
+
+        context['categories'] = categories
+        return context
 
 
-@login_required
-def create_category(request):
-    if request.method == 'POST':
-        form = CategoryForm(request.POST)
-        if form.is_valid():
-            category = form.save(commit=False)
-            category.user = request.user
+class NoteCreateView(LoginRequiredMixin, CreateView):
+    model = Note
+    form_class = NoteForm
+    template_name = 'notes/create_note.html'
+    success_url = reverse_lazy('note_list')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+
+class NoteUpdateView(LoginRequiredMixin, UserIsOwnerMixin, UpdateView):
+    model = Note
+    form_class = NoteForm
+    template_name = 'notes/update_note.html'
+    success_url = reverse_lazy('note_list')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+
+class NoteDeleteView(LoginRequiredMixin, UserIsOwnerMixin, DeleteView):
+    model = Note
+    template_name = 'notes/delete_note.html'
+    success_url = reverse_lazy('note_list')
+
+
+class CategoryCreateView(LoginRequiredMixin, CreateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'notes/create_category.html'
+    success_url = reverse_lazy('note_list')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class CategoryListView(LoginRequiredMixin, ListView):
+    model = Category
+    context_object_name = 'categories'
+    template_name = 'notes/category_list.html'
+
+    def get_queryset(self):
+        return Category.objects.filter(user=self.request.user)
+
+@method_decorator(csrf_protect, name='dispatch')
+class UpdateCategoryView(View):
+    def post(self, request, *args, **kwargs):
+        print("UpdateCategoryView")
+        category_id = request.POST.get('id')
+        new_name = request.POST.get('name')
+        try:
+            category = Category.objects.get(id=category_id)
+            category.name = new_name
             category.save()
-            return redirect('create_note')
-    else:
-        form = CategoryForm()
+            return JsonResponse({'success': True})
+        except Category.DoesNotExist:
+            return JsonResponse({'success': False}, status=404)
 
-    categories = Category.objects.filter(user=request.user)
-    return render(request, 'notes/create_category.html', {'form': form, 'categories': categories})
-
-
-@login_required
-def note_list(request):
-    query = request.GET.get('query')
-    category_id = request.GET.get('category')
-    notes = Note.objects.filter(user=request.user)
-
-    if query:
-        notes = notes.filter(Q(title__icontains=query) | Q(text__icontains=query))
-    if category_id:
-        notes = notes.filter(category_id=category_id)
-
-    categories = Category.objects.filter(user=request.user)
-    return render(request, 'notes/note_list.html', {'notes': notes, 'categories': categories})
-
-
-@login_required
-def category_list(request):
-    categories = Category.objects.filter(user=request.user)
-    return render(request, 'notes/category_list.html', {'categories': categories})
+@method_decorator(csrf_protect, name='dispatch')
+class DeleteCategoryView(View):
+    def post(self, request, *args, **kwargs):
+        category_id = request.POST.get('id')
+        try:
+            category = Category.objects.get(id=category_id)
+            category.delete()
+            return JsonResponse({'success': True})
+        except Category.DoesNotExist:
+            return JsonResponse({'success': False}, status=404)
