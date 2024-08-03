@@ -4,10 +4,10 @@
 
 {% block content %}
   <h2 class="mt-5">Create Note</h2>
-  <form method="post">
+  <form method="post" class="form-control">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Save</button>
+    <button type="submit" class="btn text-light">Save</button>
   </form>
   <script>
     document.addEventListener('DOMContentLoaded', (event) => {
