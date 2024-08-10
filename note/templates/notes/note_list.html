@@ -21,9 +21,9 @@
             <li class="list-group-item mb-3">
                 <h5 class="text-primary">{{ note.title }}</h5>
                 <p class="border-start p-3 bg-dark border-5 border-success text-light">{{ note.text }}</p>
-                <p class="text-dark"> <strong>Category: {{ note.category.get_full_path }}</strong> </p>
-                <a href="{% url 'update_note' note.id %}" class="btn btn-sm btn-warning">Edit</a>
-                <a href="{% url 'delete_note' note.id %}" class="btn btn-sm btn-danger">Delete</a>
+                <p class="text-secondary"> <strong>Category: {{ note.category.get_full_path }}</strong> </p>
+                <a href="{% url 'update_note' note.id %}" class="btn text-light ">Edit</a>
+                <a href="{% url 'delete_note' note.id %}" class="btn text-light ">Delete</a>
             </li>
             {% endfor %}
         </ul>
