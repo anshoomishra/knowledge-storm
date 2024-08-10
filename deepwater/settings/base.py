@@ -182,3 +182,7 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
     },
 }
+CSRF_TRUSTED_ORIGINS = [
+    'https://www.knowledgestorm.in',
+    # Add other domains if needed
+]
