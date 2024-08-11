@@ -11,7 +11,8 @@ class Category(models.Model):
     user = models.ForeignKey(User, related_name='categories', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return self.name if self.name else ""
+
 
     def get_full_path(self):
         path = [self.name]
@@ -32,4 +33,5 @@ class Note(models.Model):
     category = models.ForeignKey(Category, related_name='notes', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return self.title
+        return self.title if self.title else ""
+

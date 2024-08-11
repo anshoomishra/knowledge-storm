@@ -16,7 +16,7 @@ class NoteListView(LoginRequiredMixin, ListView):
     model = Note
     context_object_name = 'notes'
     template_name = 'notes/note_list.html'
-    paginate_by = 5  # Number of notes per page
+    paginate_by = 3  # Number of notes per page
 
     def get_queryset(self):
         query = self.request.GET.get('query')
@@ -32,13 +32,15 @@ class NoteListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         categories = Category.objects.filter(user=self.request.user)
-
-        # Add pagination for categories
-        paginator = Paginator(categories, 5)  # 5 categories per page
-        page_number = self.request.GET.get('category_page')
-        context['categories_page_obj'] = paginator.get_page(page_number)
+        paginator_categories = Paginator(categories, self.paginate_by)
+        paginator_notes = Paginator(self.get_queryset(), self.paginate_by)
+        page_number_category = self.request.GET.get('category_page')
+        page_number_note = self.request.GET.get('notes_page')
+        context['categories_page_obj'] = paginator_categories.get_page(page_number_category)
+        context['notes_page_obj'] = paginator_notes.get_page(page_number_note)
 
         context['categories'] = categories
+        print(context)
         return context
 
 
