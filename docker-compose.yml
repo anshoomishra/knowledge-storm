@@ -13,14 +13,14 @@ services:
 
   web:
     build: .
-    command: /usr/src/app/entrypoint.sh
+   # command: /usr/src/app/entrypoint.sh
     container_name: deepwater-web
-#    entrypoint:
-#      - /bin/bash
-#      - -c
-#      - |
-#        python3 manage.py runserver --insecure 0.0.0.0:8000 #Insecure helps us serve static with Debug = False, since this is the dev container, this is intentional.
-#        # sleep infinity
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        python3 manage.py runserver --insecure 0.0.0.0:8000 #Insecure helps us serve static with Debug = False, since this is the dev container, this is intentional.
+        # sleep infinity
     volumes:
       - .:/usr/src/app
       - static_volume:/usr/src/app/static
