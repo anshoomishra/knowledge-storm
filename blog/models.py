@@ -96,6 +96,24 @@ class Article(models.Model):
             ('can_update_article', 'Can update article'),
         ]
 
+    def calculate_read_time(self):
+        """
+        Calculate the estimated read time of the article.
+        Assuming an average reading speed of 200 words per minute.
+        """
+        word_count = len(self.content.split())
+        read_time_minutes = word_count // 200  # Using integer division
+        if word_count % 200 > 0:
+            read_time_minutes += 1  # If there are leftover words, add an extra minute
+        return read_time_minutes
+
+    @property
+    def read_time(self):
+        return f"{self.calculate_read_time()} min read"
+
+    def __str__(self):
+        return self.title
+
 
 class Comment(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4, editable=False)
