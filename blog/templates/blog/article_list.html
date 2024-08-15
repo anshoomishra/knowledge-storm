@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 {% load socialaccount %}
+{% load blog_tags %}
 
 {% block content %}
 <div class="container mt-5">
@@ -8,20 +9,29 @@
         <!-- Left side: Articles list -->
         <div class="col-md-8 col-sm-10 col-10">
             <h2>Published Articles</h2>
-            <div class="row">
-                {% for article in articles %}
-                    <div class="col-md-6 mb-3" data-sr>
-                        <div class="card shadow-sm">
-                            <div class="card-body">
-                                <h2 class="card-title"><a class="text-smoke nav-link p-0" href="{% url 'article_detail' article.pk %}">{{ article.title }}</a></h2>
-                                <p class="card-text"><strong>Author:</strong> {{ article.created_by.username }}</p>
-                                <p class="ca rd-text"><strong>Created At:</strong> {{ article.created_at }}</p>
-                                <p class="card-text"><strong>Views:</strong> {{ article.views }}</p>
-                                <a href="{% url 'article_detail' article.pk %}" class="btn text-white btn-block">Read More</a>
-                            </div>
+
+            <div class="row w-100 article-content">
+                <ul class="list-group">
+                    {% for article in articles %}
+                    <li class="list-group-item mb-2">
+                        <h2 class="card-title"><a class="text-smoke nav-link p-0" href="{% url 'article_detail' article.pk %}">{{ article.title }}</a></h2>
+                        <p class="card-text"><strong>Author:</strong> {{ article.created_by.username }}</p>
+                        <p class="ca rd-text"><strong>Created At:</strong> {{ article.created_at }}</p>
+                        <p class="card-text"><strong>Views:</strong> {{ article.views }}</p>
+                        <p class="card-text">Estimated read time: {{ article.read_time }}</p>
+
+                        <div class="progress-bar">
+                            {% with progress_value=progress|get_item:article.id %}
+                                <div class="progress" style="width: {{ progress_value|default:0 }}%;">
+                                    {{ progress_value|default:0|floatformat:2 }}% read
+                                </div>
+                            {% endwith %}
                         </div>
-                    </div>
-                {% endfor %}
+                                <a href="{% url 'article_detail' article.pk %}" class="btn text-white btn-block">Read More</a>
+
+                    </li>
+                    {% endfor %}
+                </ul>
             </div>
             {% if is_paginated %}
                 <nav aria-label="Page navigation">

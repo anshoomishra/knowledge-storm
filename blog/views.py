@@ -1,3 +1,5 @@
+import json
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
@@ -8,12 +10,14 @@ from django.views.generic import TemplateView, CreateView, UpdateView, DetailVie
 from django.http import HttpResponse
 
 from blog.forms import ArticleForm, CommentForm
-from blog.models import Article, SavedArticle
+from blog.models import Article, SavedArticle, ArticleProgress
 from .permissions import CreateViewPermissionMixin,UpdateViewPermissionMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .forms import ArticleForm
 from .models import Article
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -111,6 +115,10 @@ class ArticleListView(ListView):
         context = super().get_context_data(**kwargs)
         context['authors'] = Article.objects.values_list('created_by__username', flat=True).distinct()
         context['keywords'] = Article.objects.values_list('keywords', flat=True).distinct()
+        if self.request.user.is_authenticated:
+            progress_data = ArticleProgress.objects.filter(user=self.request.user)
+            progress_dict = {p.article_id: p.progress * 100 for p in progress_data}  # Convert to percentage
+            context['progress'] = progress_dict
         return context
 
 
@@ -163,3 +171,22 @@ def publish_article(request, pk):
     article.published_at = timezone.now()
     article.save()
     return redirect('article_list')
+
+
+
+@csrf_exempt
+def update_progress(request, article_id):
+    if request.method == 'POST':
+        progress_data = json.loads(request.body)
+        progress_value = progress_data.get('progress', 0)
+        article = get_object_or_404(Article, id=article_id)
+
+        article_progress, created = ArticleProgress.objects.get_or_create(
+            user=request.user,
+            article=article
+        )
+        article_progress.progress = progress_value
+        article_progress.save()
+
+        return JsonResponse({'status': 'success'})
+

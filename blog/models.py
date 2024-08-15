@@ -133,11 +133,21 @@ class SavedArticle(models.Model):
     article = models.ForeignKey(Article,on_delete=models.CASCADE,null=True,blank=True)
     id = models.UUIDField(primary_key=True,default=uuid.uuid4, editable=False)
     saved_at = models.DateTimeField(auto_now_add=True)
+    progress = models.FloatField(default=0.0)
 
     class Meta:
         unique_together = ('user', 'article')
     def __str__(self):
         return f"Saved article - {self.user} - {self.article}"
+
+class ArticleProgress(models.Model):
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    progress = models.FloatField(default=0.0)  # Store progress as a percentage (0.0 to 1.0)
+
+    class Meta:
+        unique_together = ('user', 'article')
 
 
 
