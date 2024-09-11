@@ -20,13 +20,7 @@
                         <p class="card-text"><strong>Views:</strong> {{ article.views }}</p>
                         <p class="card-text">Estimated read time: {{ article.read_time }}</p>
 
-                        <div class="progress-bar">
-                            {% with progress_value=progress|get_item:article.id %}
-                                <div class="progress" style="width: {{ progress_value|default:0 }}%;">
-                                    {{ progress_value|default:0|floatformat:2 }}% read
-                                </div>
-                            {% endwith %}
-                        </div>
+
                                 <a href="{% url 'article_detail' article.pk %}" class="btn text-white btn-block">Read More</a>
 
                     </li>
