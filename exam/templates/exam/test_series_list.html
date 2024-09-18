@@ -2,14 +2,19 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1>Test Series</h1>
-    <ul class="list-group">
-        {% for test_series in test_series_list %}
-            <li class="list-group-item">
-                <a href="{% url 'test_series_detail' test_series.pk %}">{{ test_series.title }}</a>
-                <p>{{ test_series.description }}</p>
-            </li>
-        {% endfor %}
-    </ul>
+    <h1 class="mb-4">Test Series</h1>
+
+    {% for test_series in test_series_list %}
+    <div class="card border-success mb-3" style="max-width: 18rem;">
+        <div class="card-header bg-transparent border-success"><a href="{% url 'test_series_detail' test_series.pk %}">{{test_series.title }}</a></div>
+        <div class="card-body text-success">
+            <h5 class="card-title">Success card title</h5>
+            <p class="card-text">{{ test_series.description }}</p>
+        </div>
+        <div class="card-footer bg-transparent border-success">{{ test_series.tests }}</div>
+    </div>
+
+    {% endfor %}
+
 </div>
 {% endblock %}
