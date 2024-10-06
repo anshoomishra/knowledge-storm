@@ -11,16 +11,17 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_HOST_AUTH_METHOD: trust
 
+  redis:
+    image: redis:alpine  # Using Redis alpine for a lightweight version
+    container_name: redis-server
+    ports:
+      - "6379:6379"  # Expose Redis port
+    restart: always
+
   web:
     build: .
     command: /usr/src/app/entrypoint.sh
     container_name: deepwater-web
-#    entrypoint:
-#      - /bin/bash
-#      - -c
-#      - |
-#        python3 manage.py runserver --insecure 0.0.0.0:8000 #Insecure helps us serve static with Debug = False, since this is the dev container, this is intentional.
-#        # sleep infinity
     volumes:
       - .:/usr/src/app
       - static_volume:/usr/src/app/static
@@ -31,7 +32,9 @@ services:
       - .env
     depends_on:
       - db
+      - redis  # Add redis as a dependency
     restart: always
+
   nginx:
     image: nginx:latest
     ports:
@@ -43,6 +46,7 @@ services:
       - media_volume:/usr/src/app/media
     depends_on:
       - web
+
 volumes:
   postgres_data:
   static_volume:

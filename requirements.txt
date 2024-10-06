@@ -43,3 +43,4 @@ tokenizers==0.19.1
 typing_extensions==4.12.2
 urllib3==2.2.1
 zope.interface==6.4.post2
+django-redis==5.4.0

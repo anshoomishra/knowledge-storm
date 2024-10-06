@@ -78,6 +78,7 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT', '5432'),
+        'CONN_MAX_AGE': 600,
     }
 }
 
@@ -187,3 +188,15 @@ CSRF_TRUSTED_ORIGINS = [
     'https://www.knowledgestorm.in',
     # Add other domains if needed
 ]
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://redis-server:6379/1',  # Redis server URL
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+# Optional: Set the default timeout for cache items (e.g., 5 minutes)
+CACHE_TIMEOUT = 1500

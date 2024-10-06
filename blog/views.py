@@ -18,7 +18,7 @@ from .forms import ArticleForm
 from .models import Article
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-
+from django.core.cache import cache
 
 # Create your views here.
 
@@ -95,19 +95,31 @@ class ArticleListView(ListView):
     paginate_by = 10  # Add pagination
 
     def get_queryset(self):
+        # Try to get the cached queryset
+        cached_articles = cache.get('cached_articles')
+
+        if cached_articles:
+            return cached_articles
+
+        # If not cached, query the database
         queryset = Article.objects.published()
 
         # Filtering by author
         author = self.request.GET.get('author')
-        queryset = queryset.filter_by_author(author)
+        if author:
+            queryset = queryset.filter_by_author(author)
 
         # Filtering by keywords
         keywords = self.request.GET.get('keywords')
-        queryset = queryset.filter_by_keywords(keywords)
+        if keywords:
+            queryset = queryset.filter_by_keywords(keywords)
 
         # Sorting
         sort_order = self.request.GET.get('sort_order', 'latest')
         queryset = queryset.sort_by(sort_order)
+
+        # Cache the queryset for future use (set a timeout of 5 minutes)
+        cache.set('cached_articles', queryset, timeout=300)
 
         return queryset
 
