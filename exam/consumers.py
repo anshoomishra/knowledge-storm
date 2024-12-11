@@ -61,7 +61,7 @@ class TestConsumer(AsyncWebsocketConsumer):
 
         if question_attempt:
             print(f"Existing time_spent: {question_attempt.time_spent}")
-            question_attempt.time_spent += time_spent_timedelta
+            question_attempt.time_spent = time_spent_timedelta
             print(f"Updated time_spent: {question_attempt.time_spent}")
             await sync_to_async(question_attempt.save)()
             print("QuestionAttempt saved successfully.")

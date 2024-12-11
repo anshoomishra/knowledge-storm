@@ -94,7 +94,7 @@ class StartTestView(LoginRequiredMixin,View):
         return redirect('take_test', test_attempt.id, first_question.id)
 
 
-class TakeTestView(View):
+class TakeTestView(LoginRequiredMixin,View):
     def get(self, request, attempt_id, question_id):
         test_attempt = get_object_or_404(TestAttempt, id=attempt_id, user=request.user)
         if test_attempt.is_completed:
@@ -170,13 +170,13 @@ class ResumeTestView(View):
 
 
 class PauseTestView(View):
-    def post(self, request, attempt_id):
+    def get(self, request, attempt_id):
         test_attempt = get_object_or_404(TestAttempt, id=attempt_id, user=request.user)
         if test_attempt.is_completed:
             return HttpResponseForbidden("You have already completed this test.")
 
         test_attempt.pause()
-        return redirect('test_series_detail', test_attempt.test.series.id)
+        return redirect('test_series_detail', test_attempt.test.test_series.id)
 
 
 class TestCompleteView(View):

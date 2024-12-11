@@ -47,8 +47,11 @@
 let attemptId = "{{ test_attempt.id }}";  // Pass the attempt ID to JavaScript
 let csrfToken = "{{ csrf_token }}";  // Pass the CSRF token to JavaScript
 let startTime = Date.now();
+let log = console.log
+log("start time",startTime)
 let timeSpent = 0;
 let maxTime = {{ remained_time_seconds }};
+log("maxTime",maxTime)
 let timeRemaining = maxTime;
 let questionTimeSpent = {{question_time_spent}};
 
@@ -89,6 +92,7 @@ function updateClock() {
     questionTimeSpent = questionTimeSpent + 1
     document.getElementById('remaining_time').innerText = formatTime(timeRemaining);
     document.getElementById('question_time').innerText = formatTime(questionTimeSpent);
+    document.getElementById('question_time_spent').value = questionTimeSpent;
     if (timeRemaining <= 0) {
         clearInterval(timer);
        document.getElementById('submit-button').click();
